@@ -78,25 +78,6 @@
                                     officia? Blanditiis vero veritatis nulla perspiciatis dolore!
                                 </div>
                             </div>
-
-                            <!-- ------------------------------ -->
-                            <!-- Buton Start -->
-                            <button id="run-script-button" class="btn btn-primary">Python Scriptini Çalıştır</button>
-                            <!-- Buton için JavaScript -->
-                            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-                            <script>
-                                $('#run-script-button').click(function () {
-                                    $.get('/run-script', function (data) {
-                                        // alert('Python script output: ' + data);
-                                        console.log(data);
-                                    }).fail(function (error) {
-                                        alert('Python script error: ' + error.responseText);
-                                        console.log(error.responseText);
-                                    });
-                                });
-                            </script>
-                            <!-- Buton Finish -->
-                            <!-- ------------------------------ -->
                         </div>
                     </div>
                     <!-- Chart End -->
@@ -123,11 +104,12 @@
                     <!-- Widgets End -->
 
                     <!-- Footer -->
-                    <%- include('partials/footer') %> 
-                    <!-- Footer End -->
+                    <%- include('partials/footer') %>
+                        <!-- Footer End -->
+
             </div>
             <!-- Content End -->
-            
+
             <!-- Back to Top -->
             <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>

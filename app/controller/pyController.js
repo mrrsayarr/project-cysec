@@ -15,7 +15,7 @@ exports.runPythonScript = function(scriptPath, callback) {
     });
 
     python.on('close', function(code) {
-        // console.log('Hata: ' + error + '\n' + 'Çıktı: ' + output); 
+        console.log('Hata: ' + error + '\n' + 'Çıktı: ' + output); 
         
         if (code !== 0) {
             return callback(new Error(`Python script exited with code ${code}: ${error}`));

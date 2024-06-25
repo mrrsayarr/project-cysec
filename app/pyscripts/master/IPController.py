@@ -35,7 +35,7 @@ COMMUNICATION_PROTOCOLS = {
     22: "SSH",
 }
 
-DB_PATH = 'Database.db'
+DB_PATH = '../master/Database.db'
 
 
 def get_connections():
