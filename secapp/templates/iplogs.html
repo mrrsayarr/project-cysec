@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}
+IP Logs
+{% endblock %}
+
+{% block content %}
+
+<!-- Chart Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <!-- Logs Start -->
+        <div class="container-fluid">
+            <h1 class="my-4">IP Logs</h1>
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>PID</th>
+                        <th>Process</th>
+                        <th>Local</th>
+                        <th>Remote</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for iplog in iplogs %}
+                    <tr>
+                        <td>{{ iplog.ID }}</td>
+                        <td>{{ iplog.PID }}</td>
+                        <td>{{ iplog.Process }}</td>
+                        <td>{{ iplog.Local }}</td>
+                        <td>{{ iplog.Remote }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- Logs End -->
+    </div>
+</div>
+<!-- Chart End -->
+
+{% endblock %}

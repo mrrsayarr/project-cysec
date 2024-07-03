@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}
+Settings
+{% endblock %}
+
+{% block content %}
+
+<!-- Chart Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="col m-2 p-2">
+        <button type="button" class="btn btn-primary" onclick="toggleButton(this)">
+            <span class="button-icon">Button 1</span>
+            <i class="fas fa-check-circle"></i>
+        </button>
+        <p class="mt-1">This button does something.</p>
+    </div>
+    <div class="col m-2 p-2">
+        <button type="button" class="btn btn-primary" onclick="toggleButton(this)">
+            <span class="button-icon">Button 2</span>
+            <i class="fas fa-check-circle"></i>
+        </button>
+        <p class="mt-1">This button does something.</p>
+    </div>
+    <div class="col m-2 p-2">
+        <button type="button" class="btn btn-primary" onclick="toggleButton(this)">
+            <span class="button-icon">Button 3</span>
+            <i class="fas fa-check-circle"></i>
+        </button>
+        <p class="mt-1">This button does something.</p>
+    </div>
+    <div class="col m-2 p-2">
+        <button type="button" class="btn btn-primary" onclick="toggleButton(this)">
+            <span class="button-icon">Button 4</span>
+            <i class="fas fa-check-circle"></i>
+        </button>
+        <p class="mt-1">This button does something.</p>
+    </div>
+</div>
+<!-- Chart End -->
+
+<script>
+    // local storage for changing button color
+    window.onload = function () {
+        var buttons = document.querySelectorAll('.btn');
+        buttons.forEach(function (button, index) {
+            var isActive = localStorage.getItem('button' + index);
+            if (isActive === 'true') {
+                button.classList.remove('btn-primary');
+                button.classList.add('btn-success');
+            }
+        });
+    }
+
+    function toggleButton(button) {
+        button.classList.toggle('btn-primary');
+        button.classList.toggle('btn-success');
+
+        var buttons = document.querySelectorAll('.btn');
+        buttons.forEach(function (btn, index) {
+            if (btn === button) {
+                localStorage.setItem('button' + index, btn.classList.contains('btn-success'));
+            }
+        });
+    }
+
+</script>
+
+{% endblock %}
