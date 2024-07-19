@@ -8,34 +8,51 @@ Settings
 
 <!-- Chart Start -->
 <div class="container-fluid pt-4 px-4">
-    <div class="col m-2 p-2">
-        <button type="button" class="btn btn-primary" onclick="toggleButton(this)">
-            <span class="button-icon">Button 1</span>
-            <i class="fas fa-check-circle"></i>
-        </button>
-        <p class="mt-1">This button does something.</p>
-    </div>
-    <div class="col m-2 p-2">
-        <button type="button" class="btn btn-primary" onclick="toggleButton(this)">
+    <button type="button" class="btn btn-primary" id="run-script-button">Scripti Çalıştır</button>
+    <button type="button" class="btn btn-primary" id="stop-script-button">Scripti Durdur</button>
+
+    <input type="text" id="script-status" class="form-control p-1 mt-2" readonly>
+    
+    <script>
+        document.getElementById('run-script-button').addEventListener('click', function () {
+            fetch('/run_script/')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    document.getElementById('script-status').value = data.status;
+                });
+        });
+
+        document.getElementById('stop-script-button').addEventListener('click', function () {
+            fetch('/stop_script/')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    document.getElementById('script-status').value = data.status;
+                });
+        });
+    </script>
+    <!-- <div class="col m-2 p-2">
+        <button type="button" class="btn btn-danger" onclick="toggleButton(this)">
             <span class="button-icon">Button 2</span>
-            <i class="fas fa-check-circle"></i>
+            <i class="fas fa-times-circle"></i>
         </button>
         <p class="mt-1">This button does something.</p>
     </div>
     <div class="col m-2 p-2">
-        <button type="button" class="btn btn-primary" onclick="toggleButton(this)">
+        <button type="button" class="btn btn-danger" onclick="toggleButton(this)">
             <span class="button-icon">Button 3</span>
-            <i class="fas fa-check-circle"></i>
+            <i class="fas fa-times-circle"></i>
         </button>
         <p class="mt-1">This button does something.</p>
     </div>
     <div class="col m-2 p-2">
-        <button type="button" class="btn btn-primary" onclick="toggleButton(this)">
+        <button type="button" class="btn btn-danger" onclick="toggleButton(this)">
             <span class="button-icon">Button 4</span>
-            <i class="fas fa-check-circle"></i>
+            <i class="fas fa-times-circle"></i>
         </button>
         <p class="mt-1">This button does something.</p>
-    </div>
+    </div> -->
 </div>
 <!-- Chart End -->
 
@@ -46,24 +63,13 @@ Settings
         buttons.forEach(function (button, index) {
             var isActive = localStorage.getItem('button' + index);
             if (isActive === 'true') {
-                button.classList.remove('btn-primary');
+                button.classList.remove('btn-danger');
                 button.classList.add('btn-success');
+                button.querySelector('i').classList.remove('fa-times-circle');
+                button.querySelector('i').classList.add('fa-check-circle');
             }
         });
     }
-
-    function toggleButton(button) {
-        button.classList.toggle('btn-primary');
-        button.classList.toggle('btn-success');
-
-        var buttons = document.querySelectorAll('.btn');
-        buttons.forEach(function (btn, index) {
-            if (btn === button) {
-                localStorage.setItem('button' + index, btn.classList.contains('btn-success'));
-            }
-        });
-    }
-
 </script>
 
 {% endblock %}
