@@ -27,9 +27,9 @@ process = None
 
 def run_script(request):
     global process
-    script_path = os.path.join(django_settings.SCRIPTS_DIR, 'IPController.py')  # 'settings' yerine 'django_settings' kullanıldı
+    script_path = os.path.join(django_settings.SCRIPTS_DIR, 'IPController.py')  # 'django_settings' is used instead of 'settings'
     process = subprocess.Popen(['python', script_path])
-    return JsonResponse({"status": "Script çalıştırıldı"})
+    return JsonResponse({"status": "Script started"})
 
 import time
 
@@ -37,12 +37,12 @@ def stop_script(request):
     global process
     if process:
         process.terminate()
-        # Sürecin sonlandığını kontrol etmek için bir bekleme süresi ekleyin
-        for _ in range(10):  # 10 saniye boyunca kontrol et
-            if process.poll() is not None:  # Süreç sonlandı
+        # Add a waiting period to check if the process has ended
+        for _ in range(10):  # Check for 10 seconds
+            if process.poll() is not None:  # Process has ended
                 process = None
-                return JsonResponse({"status": "Script durduruldu"})
-            time.sleep(1)  # Her kontrol arasında 1 saniye bekle
-        return JsonResponse({"status": "Script durdurulamadı"})
+                return JsonResponse({"status": "Script stopped"})
+            time.sleep(1)  # Wait 1 second between each check
+        return JsonResponse({"status": "Script could not be stopped"})
     else:
-        return JsonResponse({"status": "Script zaten durdurulmuş"})
+        return JsonResponse({"status": "Script is already stopped"})

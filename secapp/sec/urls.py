@@ -8,7 +8,7 @@ urlpatterns = [
     path("eventlog", views.eventlog, name="eventlog"),
     path("iplogs", views.iplogs, name="iplogs"),
 
-    # POST requests
+    # POST requests for IPLogs
     path('run_script/', views.run_script, name='run_script'),
     path('stop_script/', views.stop_script, name='stop_script'),
 ]
