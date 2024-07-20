@@ -1,0 +1,38 @@
+<!-- IPController.py control form -->
+<button type="button" class="btn btn-primary" id="run-script-button" data-bs-toggle="button" autocomplete="off">
+    Run Script <span id="run-icon"></span>
+</button>
+<button type="button" class="btn btn-primary" id="stop-script-button" data-bs-toggle="button" autocomplete="off">
+    Stop Script <span id="stop-icon"></span>
+</button>
+
+<input type="text" id="script-status" class="form-control p-1 mt-2" readonly>
+
+<script>
+    document.getElementById('run-script-button').addEventListener('click', function () {
+        this.classList.add('loading');
+        document.getElementById('run-icon').textContent = ''; // Clear the icon
+        fetch('/run_script/')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                document.getElementById('script-status').value = data.status;
+                this.classList.remove('loading');
+                document.getElementById('run-icon').textContent = '✔'; // Add a checkmark to the icon
+            });
+    });
+
+    document.getElementById('stop-script-button').addEventListener('click', function () {
+        this.classList.add('loading');
+        document.getElementById('stop-icon').textContent = ''; // Clear the icon
+        fetch('/stop_script/')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                document.getElementById('script-status').value = data.status;
+                this.classList.remove('loading');
+                document.getElementById('stop-icon').textContent = '✔'; // Add a checkmark to the icon
+                document.getElementById('run-icon').textContent = ''; // Remove the checkmark from the run script button when stop script button is pressed
+            });
+    });
+</script>
