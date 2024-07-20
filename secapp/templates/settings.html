@@ -8,30 +8,17 @@ Settings
 
 <!-- Chart Start -->
 <div class="container-fluid pt-4 px-4">
-    <button type="button" class="btn btn-primary" id="run-script-button">Scripti Çalıştır</button>
-    <button type="button" class="btn btn-primary" id="stop-script-button">Scripti Durdur</button>
-
-    <input type="text" id="script-status" class="form-control p-1 mt-2" readonly>
     
-    <script>
-        document.getElementById('run-script-button').addEventListener('click', function () {
-            fetch('/run_script/')
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    document.getElementById('script-status').value = data.status;
-                });
-        });
+    <div class="card m-2">
+        <div class="card-header">
+            IP Network Controller 
+        </div>
+        <div class="card-body">
+            {% include 'partials/_ipcontroller.html' %}
+        </div>
+    </div>
 
-        document.getElementById('stop-script-button').addEventListener('click', function () {
-            fetch('/stop_script/')
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    document.getElementById('script-status').value = data.status;
-                });
-        });
-    </script>
+
     <!-- <div class="col m-2 p-2">
         <button type="button" class="btn btn-danger" onclick="toggleButton(this)">
             <span class="button-icon">Button 2</span>
