@@ -43,7 +43,7 @@
 
         <!-- Content Start -->
         <div class="content">
-            
+
             {% include 'partials/_navbar.html' %}
 
             <!-- Chart Start -->
@@ -59,8 +59,39 @@
         </div>
         <!-- Content End -->
 
-        <!-- Back to Top -->
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+        <!-- Back to Top Button -->
+        <style>
+            .animated-button {
+                transition: transform 0.3s;
+                transition-delay: 0s;
+            }
+
+            .animated-button:hover {
+                transform: scale(1.1);
+            }
+        </style>
+
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top animated-button"><i
+                class="bi bi-arrow-up"></i></a>
+        <script>
+            // Back to Top butonunu seç
+            let backToTopButton = document.querySelector(".back-to-top");
+
+            // Butonu varsayılan olarak gizle
+            backToTopButton.style.display = "none";
+
+            // Scroll mesafesine göre butonun görünürlüğünü kontrol et
+            function checkScroll() {
+                let scrollPosition = window.pageYOffset;
+                if (scrollPosition > 300) {  // 300px'den fazla scroll edildiyse butonu göster
+                    backToTopButton.style.display = "inline-block";
+                } else {  // Aksi halde butonu gizle
+                    backToTopButton.style.display = "none";
+                }
+            }
+            // Her scroll olayında checkScroll fonksiyonunu çağır
+            window.addEventListener("scroll", checkScroll);
+        </script>
     </div>
 
     <!-- JavaScript Libraries -->
