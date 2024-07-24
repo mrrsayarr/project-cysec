@@ -15,15 +15,12 @@ IP Logs
         width: 1%;  /* Noktanın genişliğini ayarlar */
         height: 1%; /* Noktanın yüksekliğini ayarlar */
     }
-
     @keyframes blink {
         0% { opacity: 0; }
         50% { opacity: 1; }
         100% { opacity: 0; }
     }
 </style>
-
-
 
 <div class="container-fluid pt-4 px-4">
     <div class="row g-4">
@@ -37,8 +34,10 @@ IP Logs
                         <th>ID</th>
                         <th>PID</th>
                         <th>Process</th>
-                        <th>Local</th>
-                        <th>Remote</th>
+                        <th>Local IP</th>
+                        <th>Local Port</th>
+                        <th>Remote IP</th>
+                        <th>Remote Port</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -47,13 +46,15 @@ IP Logs
                         <td>{{ iplog.ID }}</td>
                         <td>{{ iplog.PID }}</td>
                         <td>{{ iplog.Process }}</td>
-                        <td>{{ iplog.Local }}</td>
+                        <td>{{ iplog.LocalIp }}</td>
+                        <td>{{ iplog.LocalPort }}</td>
                         <td>
-                            {{ iplog.Remote }}
+                            {{ iplog.RemoteIp }}
                             {% if iplog.Type == "Public" %}
                             <span class="rounded-circle p-1 blinking-dot"></span>
                             {% endif %}
                         </td>
+                        <td>{{ iplog.RemotePort }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
