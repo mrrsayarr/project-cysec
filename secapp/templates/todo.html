@@ -219,17 +219,6 @@ To-Do List App
         removeButton.addEventListener("click", removeItem);
     });
 
-    // Sağ tıklamayı engelle
-    document.addEventListener("contextmenu", function (event) {
-        event.preventDefault();
-    });
-
-    // Sağ tıklamayı engelle ve uyarı mesajı göster
-    // document.addEventListener("contextmenu", function (event) {
-    //     event.preventDefault();
-    //     alert("Sağ tıklama engellendi.");
-    // });
-
     // Ekleme butonuna tıklanınca addItem fonksiyonunu çalıştır
     addButton.addEventListener("click", addItem);
 
@@ -277,16 +266,16 @@ To-Do List App
     function removeItem(event) {
         let itemIndex = toDoItems.indexOf(event.target.previousSibling.textContent);
         let item = toDoItems.splice(itemIndex, 1)[0];
-    
+
         // Yerel depolama alanını güncelleme
         localStorage.setItem("toDoItems", JSON.stringify(toDoItems));
-    
+
         // Silinen öğeler listesine ekle
         deletedItems.push(item);
         localStorage.setItem("deletedItems", JSON.stringify(deletedItems));
-    
+
         itemList.removeChild(event.target.parentNode);
-    
+
         // Silinen öğeler listesini güncelle
         updateDeletedItemsList();
     }
@@ -306,14 +295,14 @@ To-Do List App
                 // Öğeyi geri yükle
                 toDoItems.push(item);
                 localStorage.setItem("toDoItems", JSON.stringify(toDoItems));
-            
+
                 // Silinen öğeler listesinden kaldır
                 let itemIndex = deletedItems.indexOf(item);
                 deletedItems.splice(itemIndex, 1);
                 localStorage.setItem("deletedItems", JSON.stringify(deletedItems));
-            
+
                 listItem.remove();
-            
+
                 // Sayfayı yenile
                 location.reload();
             });
