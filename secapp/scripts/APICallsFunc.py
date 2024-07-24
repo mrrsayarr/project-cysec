@@ -8,7 +8,7 @@ import time
 import json
 import sqlite3
 
-DB_PATH = 'Database.db'
+DB_PATH = 'db.sqlite3'
 
 
 def log_api_call_to_db(flow):

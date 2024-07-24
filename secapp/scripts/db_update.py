@@ -6,7 +6,7 @@ Database güncellemesini yapan fonksiyon
 import sqlite3
 
 def update_database():
-    db = sqlite3.connect('Database.db')
+    db = sqlite3.connect('db.sqlite3')
     cursor = db.cursor()
 
     # cursor.execute("UPDATE events SET SourceName = 'Microsoft-Windows-Security-Auditing' WHERE SourceName IS 'Bilinmiyor' ")

@@ -1,7 +1,7 @@
 import sqlite3
 
 def update_database():
-    db = sqlite3.connect('../db.sqlite3')
+    db = sqlite3.connect('db.sqlite3')
     cursor = db.cursor()
 
     # watch_paths tablosu

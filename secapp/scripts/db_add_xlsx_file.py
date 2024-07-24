@@ -7,7 +7,7 @@ import pandas as pd
 
 
 def update_database():
-    db = sqlite3.connect('Database.db')
+    db = sqlite3.connect('db.sqlite3')
     cursor = db.cursor()
 
     # 'eventdescription' tablosundaki tüm verileri siler

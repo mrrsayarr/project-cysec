@@ -48,7 +48,7 @@ def get_cybersecurity_news(from_date=None, to_date=None, sources=None):
         print(f"Hata: {response.status_code}")
 
 def save_news_to_db(news_logs):
-    db = sqlite3.connect('Database.db')
+    db = sqlite3.connect('db.sqlite3')
     cursor = db.cursor()
     for news in news_logs:
         cursor.execute('''

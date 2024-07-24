@@ -23,7 +23,7 @@ def classify_event_id(event_id):
 
 """
 def log_error_to_db(error_message):
-    db = sqlite3.connect('Database.db')
+    db = sqlite3.connect('db.sqlite3')
     cursor = db.cursor()
     cursor.execute('''
         INSERT INTO error_logs (ErrorMessage)
@@ -72,7 +72,7 @@ def save_logs_to_json(logs, filename):
     print(f"Event logs appended to {filename}")
 
 def save_logs_to_db(logs):
-    db = sqlite3.connect('Database.db')
+    db = sqlite3.connect('db.sqlite3')
     cursor = db.cursor()
     for log in logs:
         cursor.execute('''

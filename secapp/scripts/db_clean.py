@@ -31,4 +31,4 @@ def delete_old_logs(db_path, days_old=30):
 
 # Eski logları silme fonksiyonunu çalıştır (örnek kullanım)
 if __name__ == "__main__":
-    delete_old_logs('Database.db', days_old=30)
+    delete_old_logs('db.sqlite3', days_old=30)

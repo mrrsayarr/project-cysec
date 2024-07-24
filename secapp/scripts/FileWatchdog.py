@@ -10,7 +10,7 @@ import sqlite3
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
-DB_PATH = 'Database.db'
+DB_PATH = 'db.sqlite3'
 
 
 def create_db():

@@ -8,7 +8,7 @@ def classify_event_id(event_id):
     return load_and_predict(event_id)
 
 def log_error_to_db(error_message):
-    db = sqlite3.connect('Database.db')
+    db = sqlite3.connect('db.sqlite3')
     cursor = db.cursor()
     cursor.execute('''
         INSERT INTO error_logs (ErrorMessage)
@@ -18,7 +18,7 @@ def log_error_to_db(error_message):
     db.close()
 
 def save_logs_to_db(df):
-    db = sqlite3.connect('Database.db')
+    db = sqlite3.connect('db.sqlite3')
     cursor = db.cursor()
     for _, row in df.iterrows():
         cursor.execute('''
