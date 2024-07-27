@@ -9,19 +9,23 @@ bir şekilde çözmeYE yardımcı olur.
 """
 
 import os
+import sys
+import json
+import time
 import sqlite3
 import traceback
 import win32evtlog
-import json
-import time
+from secapp import settings
+from django.conf import settings
 from RegressionFunc import load_and_predict
 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'secapp.settings')
+
+# Şimdi secapp'dan içe aktarabilirsiniz
 def classify_event_id(event_id):
     return load_and_predict(event_id)
 
-"""
-
-"""
 def log_error_to_db(error_message):
     db = sqlite3.connect('db.sqlite3')
     cursor = db.cursor()
@@ -96,13 +100,15 @@ def main():
     while True:
         try:
             security_logs = get_security_event_logs()
-            save_logs_to_json(security_logs, "Logs/LogCollectorOutput.json")
+            #save_logs_to_json(security_logs, "Logs/LogCollectorOutput.json") # ERROR ?
             save_logs_to_db(security_logs)
-            check_and_reset_file_size("Logs/LogCollectorOutput.json", max_size_mb=5)
-            time.sleep(60)
+            #check_and_reset_file_size("Logs/LogCollectorOutput.json", max_size_mb=5) # ERROR ?
+            time.sleep(1)
+            print("Succesfully! Event logs saved to database.")
         except Exception as e:
             error_message = traceback.format_exc()
             log_error_to_db(error_message)
+            print(error_message)
 
 if __name__ == "__main__":
     main()
