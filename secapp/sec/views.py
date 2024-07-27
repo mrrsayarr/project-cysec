@@ -1,4 +1,5 @@
 import os
+import time
 import subprocess
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -16,7 +17,7 @@ def eventlog(request):
     event_logs = Events.objects.all()  # Fetch all records from EventLog table
     return render(request, 'eventlog.html', {'event_logs': event_logs})
 
-
+# IPLogs table is used in this script
 import ipaddress
 
 def is_public(ip_with_port):
@@ -40,15 +41,13 @@ def todo(request):
     return render(request, 'todo.html')
 
 # POST request for IPLogs
-process = None
+process = None # Global variable to store the process
 
 def run_script(request):
     global process
     script_path = os.path.join(django_settings.SCRIPTS_DIR, 'IPController.py')  # 'django_settings' is used instead of 'settings'
     process = subprocess.Popen(['python', script_path])
     return JsonResponse({"status": "Script started"})
-
-import time
 
 def stop_script(request):
     global process
@@ -64,3 +63,25 @@ def stop_script(request):
     else:
         return JsonResponse({"status": "Script is already stopped"})
 
+
+# POST request for Eventlog
+def run_log_collector(request):
+    global process
+    script_path = os.path.join(django_settings.SCRIPTS_DIR, 'LogCollector.py')
+    process = subprocess.Popen(['python', script_path])
+    return JsonResponse({"status": "LogCollector script started"})
+
+def stop_log_collector(request):
+    global process
+    if process:
+        process.terminate()
+        # Add a waiting period to check if the process has ended
+        for _ in range(10):  # Check for 10 seconds
+            if process.poll() is not None:  # Process has ended
+                process = None
+                return JsonResponse({"status": "LogCollector script stopped"})
+            time.sleep(1)  # Wait 1 second between each check
+        return JsonResponse({"status": "LogCollector script could not be stopped"})
+    else:
+        return JsonResponse({"status": "LogCollector script is already stopped"})
+    
