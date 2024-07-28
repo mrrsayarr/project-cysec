@@ -22,6 +22,8 @@ urlpatterns = [
     path('stop-log-collector/', stop_log_collector, name='stop_log_collector'),
 
     path('clear_error_logs/', views.clear_error_logs, name='clear_error_logs'), # Clear Error Logs
+    path('clear-event-logs/', views.clear_event_logs, name='clear_event_logs'), # Clear Event Logs
 
-    
+    path('count-iplogs/', views.count_iplogs, name='count_iplogs'), # Count iplogs
+    path('count-error-logs/', views.count_error_logs, name='count_error_logs'), # Count Error Logs
 ]

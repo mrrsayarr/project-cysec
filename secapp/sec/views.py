@@ -71,10 +71,13 @@ def run_log_collector(request):
     process = subprocess.Popen(['python', script_path])
     return JsonResponse({"status": "LogCollector script started"})
 
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
 def stop_log_collector(request):
     global process
     if process:
-        process.terminate()
+        process.kill()  # Use kill instead of terminate
         # Add a waiting period to check if the process has ended
         for _ in range(10):  # Check for 10 seconds
             if process.poll() is not None:  # Process has ended
@@ -84,4 +87,3 @@ def stop_log_collector(request):
         return JsonResponse({"status": "LogCollector script could not be stopped"})
     else:
         return JsonResponse({"status": "LogCollector script is already stopped"})
-    
