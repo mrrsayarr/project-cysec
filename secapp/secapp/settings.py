@@ -20,6 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent # Script dosyalarının yolu
 
 # Şimdi secapp'dan içe aktarabilirsiniz
 from secapp import settings
+
 # Script dosyalarının yolu
 SCRIPTS_DIR = os.path.join(BASE_DIR, 'scripts')
 
