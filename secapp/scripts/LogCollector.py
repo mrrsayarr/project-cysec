@@ -15,14 +15,14 @@ import time
 import sqlite3
 import traceback
 import win32evtlog
-from secapp import settings
-from django.conf import settings
 from RegressionFunc import load_and_predict
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'secapp.settings')
 
 # Şimdi secapp'dan içe aktarabilirsiniz
+from secapp import settings
+
 def classify_event_id(event_id):
     return load_and_predict(event_id)
 
