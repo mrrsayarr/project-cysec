@@ -8,47 +8,115 @@ Event Logs
 
 <!-- Bootstrap Button -->
 <button type="button" class="btn btn-primary" id="run-log-collector-btn" data-bs-toggle="button" autocomplete="off">
-    Log Collector'ı Çalıştır <span id="run-log-collector-icon"></span>
+    Start Log Collector <span id="run-log-collector-icon"></span>
 </button>
 
 <button type="button" class="btn btn-primary" id="stop-log-collector-btn" data-bs-toggle="button" autocomplete="off">
-    Log Collector'ı Durdur <span id="stop-log-collector-icon"></span>
+    Stop Log Collector <span id="stop-log-collector-icon"></span>
+</button>
+
+<button type="button" class="btn btn-primary" id="clear-event-logs-btn" data-bs-toggle="button" autocomplete="off">
+    Clear Event Logs <span id="clear-event-logs-icon"></span>
 </button>
 
 <input type="text" id="log-collector-status" class="form-control p-1 mt-2" value="Status here" readonly>
+
 <script>
+    // Function to get the value of a cookie by its name
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Check if the cookie starts with the target name
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Get the CSRF token from the cookies
+    var csrftoken = getCookie('csrftoken');
+
+    // Get the button elements
+    var clearButton = document.getElementById('clear-event-logs-btn');
     var runButton = document.getElementById('run-log-collector-btn');
     var stopButton = document.getElementById('stop-log-collector-btn');
 
-    runButton.addEventListener('click', function () {
-        this.classList.add('loading');
-        stopButton.disabled = true;
-        document.getElementById('run-log-collector-icon').textContent = ''; // Clear the icon
-        fetch('/run-log-collector/')
-            .then(response => response.json())
+    // Event listener for the "Clear Event Logs" button
+    clearButton.addEventListener('click', function () {
+        this.classList.add('loading'); // Add a loading class to the button
+        document.getElementById('clear-event-logs-icon').textContent = ''; // Clear the icon
+
+        // Send a POST request to clear the event logs
+        fetch('/clear-event-logs/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken // Include the CSRF token in the headers
+            }
+        })
+            .then(response => {
+                // If the response is a redirect, go to the redirected URL
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    // Otherwise, parse the response as JSON
+                    return response.json();
+                }
+            })
             .then(data => {
-                console.log(data);
-                document.getElementById('log-collector-status').value = data.status;
-                this.classList.remove('loading');
-                document.getElementById('run-log-collector-icon').textContent = '✔'; // Add a checkmark to the icon
-                stopButton.disabled = false;
-                document.getElementById('stop-log-collector-icon').textContent = ''; // Remove the checkmark from the stop script button when run script button is pressed
+                if (data) {
+                    console.log(data); // Log the response data to the console
+                    document.getElementById('clear-event-logs-icon').textContent = '✔'; // Add a checkmark icon
+                    this.classList.remove('loading'); // Remove the loading class
+                }
             });
     });
 
-    stopButton.addEventListener('click', function () {
-        this.classList.add('loading');
-        runButton.disabled = true;
-        document.getElementById('stop-log-collector-icon').textContent = ''; // Clear the icon
-        fetch('/stop-log-collector/')
+    // Event listener for the "Run Log Collector" button
+    runButton.addEventListener('click', function () {
+        this.classList.add('loading'); // Add loading class to the button
+        stopButton.disabled = true; // Disable the stop button
+        document.getElementById('run-log-collector-icon').textContent = ''; // Clear the icon
+
+        // Send a request to run the log collector
+        fetch('/run-log-collector/')
             .then(response => response.json())
             .then(data => {
-                console.log(data);
-                document.getElementById('log-collector-status').value = data.status;
-                this.classList.remove('loading');
-                document.getElementById('stop-log-collector-icon').textContent = '✔'; // Add a checkmark to the icon
-                runButton.disabled = false;
-                document.getElementById('run-log-collector-icon').textContent = ''; // Remove the checkmark from the run script button when stop script button is pressed
+                console.log(data); // Log the response data to the console
+                document.getElementById('log-collector-status').value = data.status; // Update the status field
+                this.classList.remove('loading'); // Remove the loading class from the button
+                document.getElementById('run-log-collector-icon').textContent = '✔'; // Add a checkmark icon
+                stopButton.disabled = false; // Enable the stop button
+                document.getElementById('stop-log-collector-icon').textContent = ''; // Clear the icon on the stop button
+            });
+    });
+
+    // Event listener for the "Stop Log Collector" button
+    stopButton.addEventListener('click', function () {
+        this.classList.add('loading'); // Add the loading class to the button
+        runButton.disabled = true; // Disable the run button
+        document.getElementById('stop-log-collector-icon').textContent = ''; // Clear the icon
+
+        // Send a POST request to stop the log collector
+        fetch('/stop-log-collector/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken // Include the CSRF token in the headers
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data); // Log the response data to the console
+                document.getElementById('log-collector-status').value = data.status; // Update the status field
+                this.classList.remove('loading'); // Remove the loading class from the button
+                document.getElementById('stop-log-collector-icon').textContent = '✔'; // Add a checkmark icon
+                runButton.disabled = false; // Enable the run button
+                document.getElementById('run-log-collector-icon').textContent = ''; // Clear the icon on the run button
             });
     });
 </script>
@@ -82,12 +150,12 @@ Event Logs
                         <td>
                             {{ event.PredictedValue }}
                             {% if event.PredictedValue == 0 %}
-                                <span class="badge bg-success">Safe</span>
-                            {% elif event.PredictedValue >= 1 and event.PredictedValue <= 3 %}
-                                <span class="badge bg-warning">Warning</span>
-                            {% elif event.PredictedValue >= 4 and event.PredictedValue <= 5 %}
-                                <span class="badge bg-danger">Danger</span>
-                            {% endif %}
+                            <span class="badge bg-success">Safe</span>
+                            {% elif event.PredictedValue >= 1 and event.PredictedValue <= 3 %} <span
+                                class="badge bg-warning">Warning</span>
+                                {% elif event.PredictedValue >= 4 and event.PredictedValue <= 5 %} <span
+                                    class="badge bg-danger">Danger</span>
+                                    {% endif %}
                         </td>
                         <td>{{ event.TimeGenerated }}</td>
                     </tr>

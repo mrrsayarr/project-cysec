@@ -8,22 +8,24 @@ Settings
 
 <!-- Chart Start -->
 <div class="container-fluid pt-4 px-4">
-
+    <!-- Error Logs Controller -->
     <div class="card m-2">
-        <button class="btn btn-primary" onclick="location.href='{% url 'clear_error_logs' %}'">Clear Error Logs</button>
-        <p>Error log count: {{ count }}</p>
+        <div class="card-header">
+            <button class="btn btn-primary" onclick="location.href='{% url 'clear_error_logs' %}'">Clear Error Logs</button>
+            <p>Error log count: {{ errorlogs_count }}</p>
+        </div>
     </div>
-
+    <!-- IPController -->
     <div class="card m-2">
         <div class="card-header">
             IP Network Controller
-            <p>IPLogs Table Data: {{ count }}</p>
+            <p>IPLogs Table Data: {{ iplogs_count }}</p>
         </div>
         <div class="card-body">
             {% include 'partials/_ipcontroller.html' %}
         </div>
     </div>
-
+    <!-- Event Logs Controller -->
     <div class="card m-2 mt-4">
         <div class="card-header">
             Event Logs Controller
@@ -32,7 +34,7 @@ Settings
             <h1>ssss</h1>
         </div>
     </div>
-
+    <!-- File Watchdog Controller -->
     <div class="card m-2 mt-4">
         <div class="card-header">
             File Watchdog Controller
