@@ -1,0 +1,21 @@
+<div class="card m-2">
+    <div class="card-header">
+        <button class="btn btn-primary" onclick="location.href='{% url 'clear_error_logs' %}'">Clear Error Logs</button>
+        <div class="mt-2 mb-2">
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="list-group">
+                        <li class="list-group-item">Error log count: <span class="badge bg-primary">{{ errorlogs_count }}</span></li>
+                        <li class="list-group-item">IPLogs Table Data: <span class="badge bg-primary">{{ iplogs_count }}</span></li>
+                        <li class="list-group-item">ErrorLogs Table Data: <span class="badge bg-primary">{{ errorlogs_count }}</span></li>
+                        <li class="list-group-item">Events Table Data: <span class="badge bg-primary">{{ events_count }}</span></li>
+                        <li class="list-group-item">FileLogs Table Data: <span class="badge bg-primary">{{ file_logs_count }}</span></li>
+                        <li class="list-group-item">News Table Data: <span class="badge bg-primary">{{ news_count }}</span></li>
+                        <li class="list-group-item">EventDescription Table Data: <span class="badge bg-primary">{{ eventdescription_count }}</span></li>
+                        <li class="list-group-item">IPLogs Table Data: <span class="badge bg-primary">{{ iplogs_count }}</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

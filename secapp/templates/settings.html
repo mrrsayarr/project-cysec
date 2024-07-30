@@ -6,44 +6,26 @@ Settings
 
 {% block content %}
 
-<!-- Chart Start -->
 <div class="container-fluid pt-4 px-4">
-    <!-- Error Logs Controller -->
-    <div class="card m-2">
-        <div class="card-header">
-            <button class="btn btn-primary" onclick="location.href='{% url 'clear_error_logs' %}'">Clear Error Logs</button>
-            <p>Error log count: {{ errorlogs_count }}</p>
-        </div>
-    </div>
+
     <!-- IPController -->
-    <div class="card m-2">
-        <div class="card-header">
-            IP Network Controller
-            <p>IPLogs Table Data: {{ iplogs_count }}</p>
-        </div>
-        <div class="card-body">
-            {% include 'partials/_ipcontroller.html' %}
-        </div>
-    </div>
+    {% include 'partials/_ipcontroller.html' %}
+
     <!-- Event Logs Controller -->
-    <div class="card m-2 mt-4">
-        <div class="card-header">
-            Event Logs Controller
-        </div>
-        <div class="card-body">
-            <h1>ssss</h1>
-        </div>
-    </div>
+    {% include 'partials/_eventlog.html' %}
+
     <!-- File Watchdog Controller -->
-    <div class="card m-2 mt-4">
+    <div class="card m-2 mt-4 mb-4">
         <div class="card-header">
             File Watchdog Controller
         </div>
         <div class="card-body">
-            <h1>ssss</h1>
+            {% include 'partials/_filewatch.html' %}
         </div>
     </div>
 
+    <!-- Error Logs Controller -->
+    {% include 'partials/_errorlogs.html' %}
 
     <!-- <div class="col m-2 p-2">
         <button type="button" class="btn btn-danger" onclick="toggleButton(this)">
@@ -67,7 +49,6 @@ Settings
         <p class="mt-1">This button does something.</p>
     </div> -->
 </div>
-<!-- Chart End -->
 
 <script>
     // local storage for changing button color
@@ -83,6 +64,8 @@ Settings
             }
         });
     }
+
+
 </script>
 
 {% endblock %}

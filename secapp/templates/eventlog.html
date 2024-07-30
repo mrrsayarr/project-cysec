@@ -6,122 +6,8 @@ Event Logs
 
 {% block content %}
 
-<!-- Bootstrap Button -->
-<button type="button" class="btn btn-primary" id="run-log-collector-btn" data-bs-toggle="button" autocomplete="off">
-    Start Log Collector <span id="run-log-collector-icon"></span>
-</button>
+{% include 'partials/_eventlog.html' %}
 
-<button type="button" class="btn btn-primary" id="stop-log-collector-btn" data-bs-toggle="button" autocomplete="off">
-    Stop Log Collector <span id="stop-log-collector-icon"></span>
-</button>
-
-<button type="button" class="btn btn-primary" id="clear-event-logs-btn" data-bs-toggle="button" autocomplete="off">
-    Clear Event Logs <span id="clear-event-logs-icon"></span>
-</button>
-
-<input type="text" id="log-collector-status" class="form-control p-1 mt-2" value="Status here" readonly>
-
-<script>
-    // Function to get the value of a cookie by its name
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = cookies[i].trim();
-                // Check if the cookie starts with the target name
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-
-    // Get the CSRF token from the cookies
-    var csrftoken = getCookie('csrftoken');
-
-    // Get the button elements
-    var clearButton = document.getElementById('clear-event-logs-btn');
-    var runButton = document.getElementById('run-log-collector-btn');
-    var stopButton = document.getElementById('stop-log-collector-btn');
-
-    // Event listener for the "Clear Event Logs" button
-    clearButton.addEventListener('click', function () {
-        this.classList.add('loading'); // Add a loading class to the button
-        document.getElementById('clear-event-logs-icon').textContent = ''; // Clear the icon
-
-        // Send a POST request to clear the event logs
-        fetch('/clear-event-logs/', {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': csrftoken // Include the CSRF token in the headers
-            }
-        })
-            .then(response => {
-                // If the response is a redirect, go to the redirected URL
-                if (response.redirected) {
-                    window.location.href = response.url;
-                } else {
-                    // Otherwise, parse the response as JSON
-                    return response.json();
-                }
-            })
-            .then(data => {
-                if (data) {
-                    console.log(data); // Log the response data to the console
-                    document.getElementById('clear-event-logs-icon').textContent = '✔'; // Add a checkmark icon
-                    this.classList.remove('loading'); // Remove the loading class
-                }
-            });
-    });
-
-    // Event listener for the "Run Log Collector" button
-    runButton.addEventListener('click', function () {
-        this.classList.add('loading'); // Add loading class to the button
-        stopButton.disabled = true; // Disable the stop button
-        document.getElementById('run-log-collector-icon').textContent = ''; // Clear the icon
-
-        // Send a request to run the log collector
-        fetch('/run-log-collector/')
-            .then(response => response.json())
-            .then(data => {
-                console.log(data); // Log the response data to the console
-                document.getElementById('log-collector-status').value = data.status; // Update the status field
-                this.classList.remove('loading'); // Remove the loading class from the button
-                document.getElementById('run-log-collector-icon').textContent = '✔'; // Add a checkmark icon
-                stopButton.disabled = false; // Enable the stop button
-                document.getElementById('stop-log-collector-icon').textContent = ''; // Clear the icon on the stop button
-            });
-    });
-
-    // Event listener for the "Stop Log Collector" button
-    stopButton.addEventListener('click', function () {
-        this.classList.add('loading'); // Add the loading class to the button
-        runButton.disabled = true; // Disable the run button
-        document.getElementById('stop-log-collector-icon').textContent = ''; // Clear the icon
-
-        // Send a POST request to stop the log collector
-        fetch('/stop-log-collector/', {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': csrftoken // Include the CSRF token in the headers
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data); // Log the response data to the console
-                document.getElementById('log-collector-status').value = data.status; // Update the status field
-                this.classList.remove('loading'); // Remove the loading class from the button
-                document.getElementById('stop-log-collector-icon').textContent = '✔'; // Add a checkmark icon
-                runButton.disabled = false; // Enable the run button
-                document.getElementById('run-log-collector-icon').textContent = ''; // Clear the icon on the run button
-            });
-    });
-</script>
-
-<!-- Chart Start -->
 <div class="container-fluid pt-4 px-4">
     <div class="row g-4">
         <!-- Event Logs Start -->
@@ -170,6 +56,22 @@ Event Logs
         <!-- Event Logs End -->
     </div>
 </div>
-<!-- Chart End -->
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    setInterval(function(){
+        $.ajax({
+            url: '/eventlog/',  // Django view'unuzun URL'si
+            type: 'get',  // HTTP method
+            dataType: 'json',  // Sunucudan dönen veri tipi
+            success: function(data) {
+                // Burada 'data' değişkeni, sunucudan dönen JSON verisidir.
+                // Bu veriyi kullanarak HTML tablonuzu güncelleyebilirsiniz.
+            }
+        });
+    }, 5000);  // Her 5 saniyede bir AJAX isteği yapılır.
+});
+</script> -->
 
 {% endblock %}
