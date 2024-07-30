@@ -2,7 +2,7 @@
 from django.db import connection
 from django.http import HttpResponseRedirect, JsonResponse
 from sec.models import *
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
 # ONLY  Iplogs table is used in this script
@@ -13,10 +13,6 @@ def run_sql(request):
 
 from django.http import HttpResponse
 
-def count_iplogs(request):
-    iplogs_count = Iplogs.objects.count()
-    return render(request, 'settings.html', {'iplogs_count': iplogs_count})
-
 # ONLY Events table is used in this script
 
 # Clear Error_Logs
@@ -24,14 +20,40 @@ def clear_error_logs(request):
     with connection.cursor() as cursor:
         cursor.execute('DELETE FROM error_logs')
     return HttpResponseRedirect('/settings')  # Redirect to the settings page after deleting all records
-    return JsonResponse({"status": "Error logs cleared"})  # Return a JSON response
 
-def count_error_logs(request):
-    errorlogs_count = ErrorLogs.objects.count()
-    return render(request, 'settings.html', {'errorlogs_count': errorlogs_count})
+# Count Logs 
+# def count_logs(request):
+#     pass
+#     iplogs_count = Iplogs.objects.count()
+#     errorlogs_count = ErrorLogs.objects.count()
+#     events_count = Events.objects.count()
+#     file_logs_count = FileLogs.objects.count()
+#     news_count = News.objects.count()
+#     eventdescription_count = Eventdescription.objects.count()
+
+#     # POST for File Watchdogs Start
+#     if request.method == 'POST':
+#         new_path = request.POST.get('new_path')
+#         watch_path = WatchPaths.objects.first()
+#         watch_path.path = new_path
+#         watch_path.save()
+#         return redirect('count_logs')
+
+#     current_path = WatchPaths.objects.first().path
+#     # POST for File Watchdogs End
+
+#     return render(request, 'settings.html', {
+#         'iplogs_count': iplogs_count, 
+#         'errorlogs_count': errorlogs_count,
+#         'events_count': events_count,
+#         'file_logs_count': file_logs_count,
+#         'news_count': news_count,
+#         'eventdescription_count': eventdescription_count,
+#         'current_path': current_path, # POST request
+#     })
 
 # Clear Event_Logs
-# Clear oldest 10 Event_Logs
+# Clear oldest 50 Event_Logs
 @csrf_exempt
 def clear_event_logs(request):
     with connection.cursor() as cursor:
@@ -40,7 +62,7 @@ def clear_event_logs(request):
             WHERE id IN (
                 SELECT id FROM events
                 ORDER BY id ASC
-                LIMIT 100
+                LIMIT 50
             )
         ''')
     return HttpResponseRedirect('/eventlog')  # Redirect to the eventlog page after deleting the records

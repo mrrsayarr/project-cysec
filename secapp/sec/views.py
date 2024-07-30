@@ -34,8 +34,33 @@ def iplogs(request):
     return render(request, 'iplogs.html', {'iplogs': iplogs_list})
 
 def settings(request):
-    count = Iplogs.objects.count()
-    return render(request, 'settings.html', {'count': count})
+    # Count Logs 
+    iplogs_count = Iplogs.objects.count()
+    errorlogs_count = ErrorLogs.objects.count()
+    events_count = Events.objects.count()
+    file_logs_count = FileLogs.objects.count()
+    news_count = News.objects.count()
+    eventdescription_count = Eventdescription.objects.count()
+    current_path = WatchPaths.objects.first().path
+
+    # POST for File Watchdogs Start
+    if request.method == 'POST':
+        new_path = request.POST.get('new_path')
+        watch_path = WatchPaths.objects.first()
+        watch_path.path = new_path
+        watch_path.save()
+        return redirect('settings')
+    # POST for File Watchdogs End
+
+    return render(request, 'settings.html', {
+        'iplogs_count': iplogs_count, 
+        'errorlogs_count': errorlogs_count,
+        'events_count': events_count,
+        'file_logs_count': file_logs_count,
+        'news_count': news_count,
+        'eventdescription_count': eventdescription_count,
+        'current_path': current_path, # POST request
+    })
 
 def todo(request):
     return render(request, 'todo.html')
