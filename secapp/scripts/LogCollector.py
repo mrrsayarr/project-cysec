@@ -100,9 +100,9 @@ def main():
     while True:
         try:
             security_logs = get_security_event_logs()
-            #save_logs_to_json(security_logs, "Logs/LogCollectorOutput.json") # ERROR ?
+            # save_logs_to_json(security_logs, "Logs/LogCollectorOutput.json") # ERROR ?
             save_logs_to_db(security_logs)
-            #check_and_reset_file_size("Logs/LogCollectorOutput.json", max_size_mb=5) # ERROR ?
+            # check_and_reset_file_size("Logs/LogCollectorOutput.json", max_size_mb=5) # ERROR ?
             time.sleep(1)
             print("Succesfully! Event logs saved to database.")
         except Exception as e:
