@@ -11,8 +11,6 @@ def run_sql(request):
         cursor.execute('DELETE FROM IpLogs')
     return HttpResponseRedirect('/settings')  # Redirect to the IPLogs page after deleting all records
 
-from django.http import HttpResponse
-
 # ONLY Events table is used in this script
 
 # Clear Error_Logs
@@ -20,6 +18,31 @@ def clear_error_logs(request):
     with connection.cursor() as cursor:
         cursor.execute('DELETE FROM error_logs')
     return HttpResponseRedirect('/settings')  # Redirect to the settings page after deleting all records
+
+# Clear Event_Logs
+# Clear oldest 50 Event_Logs
+@csrf_exempt
+def clear_event_logs(request):
+    with connection.cursor() as cursor:
+        cursor.execute('''
+            DELETE FROM events
+            WHERE id IN (
+                SELECT id FROM events
+                ORDER BY id ASC
+                LIMIT 50
+            )
+        ''')
+    return HttpResponseRedirect('/eventlog')  # Redirect to the eventlog page after deleting the records
+
+# Clear Local IPLogs
+@csrf_exempt
+def clear_local_iplogs(request):
+    with connection.cursor() as cursor:
+        cursor.execute('''
+            DELETE FROM IpLogs
+            WHERE RemoteIP = 'localhost' OR RemoteIP = '127.0.0.1'
+        ''')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))  # Redirect to the previous page after deleting the records
 
 # Count Logs 
 # def count_logs(request):
@@ -52,17 +75,3 @@ def clear_error_logs(request):
 #         'current_path': current_path, # POST request
 #     })
 
-# Clear Event_Logs
-# Clear oldest 50 Event_Logs
-@csrf_exempt
-def clear_event_logs(request):
-    with connection.cursor() as cursor:
-        cursor.execute('''
-            DELETE FROM events
-            WHERE id IN (
-                SELECT id FROM events
-                ORDER BY id ASC
-                LIMIT 50
-            )
-        ''')
-    return HttpResponseRedirect('/eventlog')  # Redirect to the eventlog page after deleting the records

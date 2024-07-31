@@ -3,7 +3,7 @@ import time
 import subprocess
 from django.http import JsonResponse
 from django.shortcuts import render
-from sec.models import Events, Iplogs
+from sec.models import Events, Iplogs, FileLogs, ErrorLogs, News, Eventdescription, WatchPaths
 from django.conf import settings as django_settings  # 'settings' modülünü 'django_settings' olarak import edin
 from .sql_views import *
 
@@ -16,6 +16,14 @@ def index(request):
 def eventlog(request):
     event_logs = Events.objects.all()  # Fetch all records from EventLog table
     return render(request, 'eventlog.html', {'event_logs': event_logs})
+
+def filewatch(request):
+    file_logs = FileLogs.objects.all()  # Get all file logs
+    return render(request, 'filewatch.html', {'file_logs': file_logs})
+
+def news(request):
+    news_items = News.objects.all()  # Get all news items
+    return render(request, 'news.html', {'news_items': news_items})
 
 # IPLogs table is used in this script
 import ipaddress
