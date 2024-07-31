@@ -11,9 +11,12 @@
             autocomplete="off">
             Stop Script <span id="stop-icon"></span>
         </button>
-        <button type="button" class="btn btn-primary" onclick="location.href='{% url 'run_sql' %}';">Delete IPLogs SQL
-            Table!
+        <button type="button" class="btn btn-primary" onclick="location.href='{% url 'run_sql' %}';">
+            Delete IPLogs SQL Table!
         </button>
+
+        <button type="button" class="btn btn-primary" onclick="location.href='{% url 'clear_local_iplogs' %}';">
+            Delete Local IP in RemoteIP</button>
 
         <input type="text" id="script-status" class="form-control p-1 mt-2" value="Status here" readonly>
     </div>

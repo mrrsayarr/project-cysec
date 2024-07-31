@@ -35,9 +35,10 @@ IP Logs
                         <td>{{ iplog.LocalIp }}</td>
                         <td>{{ iplog.LocalPort }}</td>
                         <td>
+                            <span class="rounded-circle p-1 blinking-dot"></span>
                             {{ iplog.RemoteIp }}
                             {% if iplog.Type == "Public" %}
-                            <span class="rounded-circle p-1 blinking-dot"></span>
+                            
                             {% endif %}
                         </td>
                         <td>{{ iplog.RemotePort }}</td>

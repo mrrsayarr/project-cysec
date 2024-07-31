@@ -7,7 +7,6 @@ Settings
 {% block content %}
 
 <div class="container-fluid pt-4 px-4">
-
     <!-- IPController -->
     {% include 'partials/_ipcontroller.html' %}
 
@@ -15,39 +14,10 @@ Settings
     {% include 'partials/_eventlog.html' %}
 
     <!-- File Watchdog Controller -->
-    <div class="card m-2 mt-4 mb-4">
-        <div class="card-header">
-            File Watchdog Controller
-        </div>
-        <div class="card-body">
-            {% include 'partials/_filewatch.html' %}
-        </div>
-    </div>
+    {% include 'partials/_filewatch.html' %}
 
     <!-- Error Logs Controller -->
     {% include 'partials/_errorlogs.html' %}
-
-    <!-- <div class="col m-2 p-2">
-        <button type="button" class="btn btn-danger" onclick="toggleButton(this)">
-            <span class="button-icon">Button 2</span>
-            <i class="fas fa-times-circle"></i>
-        </button>
-        <p class="mt-1">This button does something.</p>
-    </div>
-    <div class="col m-2 p-2">
-        <button type="button" class="btn btn-danger" onclick="toggleButton(this)">
-            <span class="button-icon">Button 3</span>
-            <i class="fas fa-times-circle"></i>
-        </button>
-        <p class="mt-1">This button does something.</p>
-    </div>
-    <div class="col m-2 p-2">
-        <button type="button" class="btn btn-danger" onclick="toggleButton(this)">
-            <span class="button-icon">Button 4</span>
-            <i class="fas fa-times-circle"></i>
-        </button>
-        <p class="mt-1">This button does something.</p>
-    </div> -->
 </div>
 
 <script>
@@ -64,8 +34,6 @@ Settings
             }
         });
     }
-
-
 </script>
 
 {% endblock %}

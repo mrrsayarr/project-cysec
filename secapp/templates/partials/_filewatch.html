@@ -1,12 +1,19 @@
-<form method="POST">
-    {% csrf_token %}
-    <div class="form-group">
-        <label for="currentPath">Current Path</label>
-        <input type="text" class="form-control bg-white" id="currentPath" value="{{ current_path }}" readonly>
+<div class="card m-2 mt-4 mb-4">
+    <div class="card-header">
+        File Watchdog Controller
     </div>
-    <div class="form-group mb-2 mt-2">
-        <label for="newPath">New Path</label>
-        <input type="text" class="form-control bg-white" id="newPath" name="new_path">
+    <div class="card-body">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="currentPath">Current Path</label>
+                <input type="text" class="form-control bg-white" id="currentPath" value="{{ current_path }}" readonly>
+            </div>
+            <div class="form-group mb-2 mt-2">
+                <label for="newPath">New Path</label>
+                <input type="text" class="form-control bg-white" id="newPath" name="new_path">
+            </div>
+            <button type="submit" class="btn btn-primary">Update Path</button>
+        </form>
     </div>
-    <button type="submit" class="btn btn-primary">Update Path</button>
-</form>
+</div>

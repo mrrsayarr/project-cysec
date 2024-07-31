@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}
+File Watchdog
+{% endblock %}
+
+{% block content %}
+<!-- content here -->
+
+<div class="container-fluid pt-4 px-4">
+    <table class="table table-dark table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Event Type</th>
+                <th>File Path</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in file_logs %}
+            <tr>
+                <td>{{ log.event_type }}</td>
+                <td>{{ log.file_path }}</td>
+                <td>{{ log.timestamp }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Tablonuz zaten Bootstrap sınıflarını kullanıyor (`table`, `table-dark`, `table-striped`). Ancak, daha fazla Bootstrap
+özelliği eklemek istiyorsanız, aşağıda bazı öneriler bulunmaktadır.
+
+1. Responsive tablo: Tablonun farklı ekran boyutlarında düzgün görünmesini sağlar.
+
+```html
+<div class="table-responsive">
+    <table class="table table-dark table-striped">
+        <!-- ... -->
+    </table>
+</div>
+```
+
+2. Hover efekti: Satırların üzerine gelindiğinde renk değişir.
+
+```html
+<table class="table table-dark table-striped table-hover">
+    <!-- ... -->
+</table>
+```
+
+3. Border: Tabloya çerçeve ekler.
+
+```html
+<table class="table table-dark table-striped table-bordered">
+    <!-- ... -->
+</table>
+```
+
+4. Küçük boyut: Daha küçük yazı tipi ve hücre aralığı sağlar.
+
+```html
+<table class="table table-dark table-striped table-sm">
+    <!-- ... -->
+</table>
+```
+
+Bu özelliklerden herhangi birini veya birkaçını eklemek için, ilgili sınıfı `table` elementine ekleyin. Örneğin,
+responsive ve hover efekti eklemek için:
+
+```html
+<div class="table-responsive">
+    <table class="table table-dark table-striped table-hover">
+        <!-- ... -->
+    </table>
+</div>
+```
+
+Bu kod, tabloyu responsive hale getirir ve satırların üzerine gelindiğinde renk değişikliği efekti ekler.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
