@@ -1,4 +1,7 @@
 # sql_views.py
+import subprocess
+import os
+import time
 from django.db import connection
 from django.http import HttpResponseRedirect, JsonResponse
 from sec.models import *
@@ -44,34 +47,37 @@ def clear_local_iplogs(request):
         ''')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))  # Redirect to the previous page after deleting the records
 
-# Count Logs 
-# def count_logs(request):
-#     pass
-#     iplogs_count = Iplogs.objects.count()
-#     errorlogs_count = ErrorLogs.objects.count()
-#     events_count = Events.objects.count()
-#     file_logs_count = FileLogs.objects.count()
-#     news_count = News.objects.count()
-#     eventdescription_count = Eventdescription.objects.count()
+# POST for FileWatcher
+from django.conf import settings as django_settings
 
-#     # POST for File Watchdogs Start
-#     if request.method == 'POST':
-#         new_path = request.POST.get('new_path')
-#         watch_path = WatchPaths.objects.first()
-#         watch_path.path = new_path
-#         watch_path.save()
-#         return redirect('count_logs')
+process = None  # Global process instance
 
-#     current_path = WatchPaths.objects.first().path
-#     # POST for File Watchdogs End
+def start_watch(request):
+    global process
+    if request.method == 'POST':
+        if process is None or process.poll() is not None:
+            script_path = os.path.join(django_settings.SCRIPTS_DIR, 'FileWatchdog.py')
+            process = subprocess.Popen(['python', script_path])
+            return JsonResponse({'message': 'Watching started.'})
+        else:
+            return JsonResponse({'message': 'Watcher is already running.'})
 
-#     return render(request, 'settings.html', {
-#         'iplogs_count': iplogs_count, 
-#         'errorlogs_count': errorlogs_count,
-#         'events_count': events_count,
-#         'file_logs_count': file_logs_count,
-#         'news_count': news_count,
-#         'eventdescription_count': eventdescription_count,
-#         'current_path': current_path, # POST request
-#     })
+def stop_watch(request):
+    global process
+    if request.method == 'POST':
+        if process is not None and process.poll() is None:
+            process.terminate()
+            for _ in range(10):  # Check for 10 seconds
+                if process.poll() is not None:  # Process has ended
+                    process = None
+                    return JsonResponse({'message': 'Watching stopped.'})
+                time.sleep(1)  # Wait 1 second between each check
+            return JsonResponse({'message': 'Watcher could not be stopped.'})
+        else:
+            return JsonResponse({'message': 'No watcher to stop.'})
 
+# Clear Logs file_logs
+def clear_logs(request):
+    if request.method == 'POST':
+        FileLogs.objects.all().delete()  # Tüm FileLog kayıtlarını sil
+        return JsonResponse({'message': 'Logs cleared.'})

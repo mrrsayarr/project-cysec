@@ -10,19 +10,6 @@ from django.db import models
 
 # Create your models here.
 
-# class EventLog(models.Model):
-#     ID = models.AutoField(primary_key=True)
-#     EventID = models.IntegerField(null=True, blank=True)
-#     SourceName = models.CharField(max_length=255, null=True, blank=True)
-#     Level = models.IntegerField(null=True, blank=True)
-#     Channel = models.CharField(max_length=255, null=True, blank=True)
-#     Message = models.TextField(null=True, blank=True)
-#     PredictedValue = models.FloatField(null=True, blank=True)
-#     TimeGenerated = models.DateTimeField(null=True, blank=True)
-
-#     def __str__(self):
-#         return f"{self.EventID} || {self.PredictedValue} || {self.TimeGenerated}"
-
 class Events(models.Model):
     ID = models.AutoField(primary_key=True) # Field name made lowercase.
     EventID = models.IntegerField(db_column='EventID', blank=True, null=True)  # Field name made lowercase.

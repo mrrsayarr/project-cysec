@@ -17,9 +17,24 @@ def eventlog(request):
     event_logs = Events.objects.all()  # Fetch all records from EventLog table
     return render(request, 'eventlog.html', {'event_logs': event_logs})
 
+# File Watcher Start
 def filewatch(request):
     file_logs = FileLogs.objects.all()  # Get all file logs
-    return render(request, 'filewatch.html', {'file_logs': file_logs})
+    
+    if request.method == 'POST':
+        new_path = request.POST.get('new_path')
+        watch_path = WatchPaths.objects.first()
+        watch_path.path = new_path
+        watch_path.save()
+        return redirect('filewatch')
+
+    current_path = WatchPaths.objects.first().path
+    return render(request, 'filewatch.html', {'file_logs': file_logs, 'current_path': current_path})
+
+def get_logs(request):
+    logs = FileLogs.objects.all().values('event_type', 'file_path', 'timestamp')
+    logs_list = list(logs)  # important: convert the QuerySet to a list
+    return JsonResponse(logs_list, safe=False)
 
 def news(request):
     news_items = News.objects.all()  # Get all news items
@@ -120,3 +135,5 @@ def stop_log_collector(request):
         return JsonResponse({"status": "LogCollector script could not be stopped"})
     else:
         return JsonResponse({"status": "LogCollector script is already stopped"})
+
+    

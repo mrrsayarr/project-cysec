@@ -10,7 +10,7 @@ urlpatterns = [
     path("settings", views.settings, name="settings"),
     path("eventlog", views.eventlog, name="eventlog"),
     path("iplogs", views.iplogs, name="iplogs"),
-    path('todo', views.todo, name='todo'),
+    path('todo/', views.todo, name='todo'),
     path('filewatch', views.filewatch, name='filewatch'),
     path('news/', views.news, name='news'),
 
@@ -27,4 +27,9 @@ urlpatterns = [
     path('clear-event-logs/', views.clear_event_logs, name='clear_event_logs'), # Clear Event Logs
     path('clear_local_iplogs/', views.clear_local_iplogs, name='clear_local_iplogs'), # Clear "Local" IP Logs
 
+    # POST requests for FileWatcher
+    path('start_watch', views.start_watch, name='start_watch'),
+    path('stop_watch', views.stop_watch, name='stop_watch'),
+    path('clear_logs', views.clear_logs, name='clear_logs'), # Clear Logs
+    path('get_logs', views.get_logs, name='get_logs'), # Get Logs NOW!
 ]
