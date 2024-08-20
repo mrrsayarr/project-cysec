@@ -1,0 +1,14 @@
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Tara</button>
+</form>
+
+{% if open_ports %}
+    <h2>Açık Portlar:</h2>
+    <ul>
+    {% for port in open_ports %}
+        <li>{{ port }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}

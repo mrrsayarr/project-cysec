@@ -7,8 +7,11 @@ File Watchdog
 {% block content %}
 <!-- content here -->
 
+<!-- File Watchdog Controller -->
+{% include 'partials/_filewatch.html' %}
+
 <div class="container-fluid pt-4 px-4">
-    <table class="table table-dark table-striped table-hover">
+    <table id="fileLogsTable" class="table table-dark table-striped table-hover">
         <thead>
             <tr>
                 <th>Event Type</th>
@@ -28,6 +31,31 @@ File Watchdog
     </table>
 </div>
 
+<script>
+    function updateTable() {
+        const url = '/get_logs';
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector('#fileLogsTable tbody');
+                // Clear the table body
+                while (tableBody.firstChild) {
+                    tableBody.removeChild(tableBody.firstChild);
+                }
+                // Add new rows
+                data.forEach(log => {
+                    const row = tableBody.insertRow(-1);
+                    for (let key in log) {
+                        let cell = row.insertCell(-1);
+                        cell.innerHTML = log[key];
+                    }
+                });
+            });
+    }
+    
+    // Call updateTable every 5 seconds
+    setInterval(updateTable, 1000);
+</script>
 
 {% endblock %}
 
