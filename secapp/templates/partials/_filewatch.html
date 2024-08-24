@@ -12,12 +12,74 @@
             <div class="form-group mb-2 mt-2">
                 <label for="newPath">New Path</label>
                 <input type="text" class="form-control bg-white" id="newPath" name="new_path">
-                <small>Example Path:  C:\Users\msy\Project</small>
+                <small>Example Path: C:\Users\msy\Project</small>
             </div>
             <button type="submit" class="btn btn-primary">Update Path</button>
-            <button type="button" class="btn btn-primary watch-button">Start Watching</button>
-            <button type="button" class="btn btn-primary watch-button">Stop Watching</button>
+            <!-- <button type="button" class="btn btn-primary watch-button">Start Watching</button> -->
+            <!-- switch control start -->
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="watchSwitch">
+                <label class="form-check-label" for="watchSwitch">Start Watching</label>
+            </div>
+
+            <style>
+                .form-check-input:checked {
+                    background-color: green;
+                    border-color: green;
+                }
+
+                .form-check-input:not(:checked) {
+                    background-color: red;
+                    border-color: red;
+                }
+            </style>
+
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script>
+                // Switch'in durumu değiştirildiğinde, renkleri ve durumu güncelle
+                document.getElementById('watchSwitch').addEventListener('change', (event) => {
+                    event.target.style.backgroundColor = event.target.checked ? 'green' : 'red';
+                    event.target.style.borderColor = event.target.checked ? 'green' : 'red';
+                    document.getElementById('log-collector-status').value = event.target.checked ? 'Start Watching' : 'Stop Watching';
+                });
+
+                // Sayfa yüklendiğinde switch'in durumunu kontrol et
+                document.addEventListener('DOMContentLoaded', (event) => {
+                    const watchSwitch = document.getElementById('watchSwitch');
+                    const isWatching = localStorage.getItem('isWatching');
+
+                    // Eğer daha önce bir değer kaydedilmişse, switch'i ve durumu bu değere göre ayarla
+                    if (isWatching !== null) {
+                        watchSwitch.checked = (isWatching === 'true');
+                        document.getElementById('log-collector-status').value = watchSwitch.checked ? 'Start Watching' : 'Stop Watching';
+                    }
+                });
+
+                // Switch'in durumu değiştirildiğinde, bu durumu localStorage'a kaydet ve ilgili Python fonksiyonunu çağır
+                document.getElementById('watchSwitch').addEventListener('change', (event) => {
+                    localStorage.setItem('isWatching', event.target.checked);
+
+                    // AJAX isteği ile ilgili Python fonksiyonunu çağır
+                    $.ajax({
+                        type: 'POST',
+                        url: event.target.checked ? '/start_watch' : '/stop_watch',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        success: function(response) {
+                            console.log(response.message);
+                        },
+                        error: function(error) {
+                            console.log(error);
+                        }
+                    });
+                });
+            </script>
+            <!-- switch control end -->
             <button type="button" class="btn btn-primary" id="clearLogsButton">Clear Logs</button>
+            <div class="form-group">
+                <input type="text" id="log-collector-status" class="form-control p-1 mt-2" value="Status here" readonly>
+            </div>
         </form>
     </div>
 </div>
@@ -56,6 +118,7 @@
                     alert(data.message);
                     isWatching = !isWatching;
                     button.innerText = isWatching ? 'Stop Watching' : 'Start Watching';
+                    document.getElementById('log-collector-status').value = data.status; // Update the status field
                 });
         });
     });
@@ -85,7 +148,7 @@
                 location.reload();  // Sayfayı yeniden yükle
             });
     });
-    
+
     function clearTable(tableId) {
         const table = document.getElementById(tableId);
         while (table.rows.length > 1) {  // Keep the first row (header)

@@ -102,7 +102,6 @@
         this.classList.add('loading'); // Add the loading class to the button
         runButton.disabled = true; // Disable the run button
         document.getElementById('stop-log-collector-icon').textContent = ''; // Clear the icon
-
         // Send a POST request to stop the log collector
         fetch('/stop-log-collector/', {
             method: 'POST',
@@ -110,14 +109,14 @@
                 'X-CSRFToken': csrftoken // Include the CSRF token in the headers
             }
         })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data); // Log the response data to the console
-                document.getElementById('log-collector-status').value = data.status; // Update the status field
-                this.classList.remove('loading'); // Remove the loading class from the button
-                document.getElementById('stop-log-collector-icon').textContent = '✔'; // Add a checkmark icon
-                runButton.disabled = false; // Enable the run button
-                document.getElementById('run-log-collector-icon').textContent = ''; // Clear the icon on the run button
-            });
+        .then(response => response.json())
+        .then(data => {
+            console.log(data); // Log the response data to the console
+            document.getElementById('log-collector-status').value = data.status; // Update the status field
+            this.classList.remove('loading'); // Remove the loading class from the button
+            document.getElementById('stop-log-collector-icon').textContent = '✔'; // Add a checkmark icon
+            runButton.disabled = false; // Enable the run button
+            document.getElementById('run-log-collector-icon').textContent = ''; // Clear the icon on the run button
+        });
     });
 </script>

@@ -33,7 +33,7 @@ File Watchdog
 
 <script>
     function updateTable() {
-        const url = '/get_logs';
+        const url = '/get_file_logs';
         fetch(url)
             .then(response => response.json())
             .then(data => {

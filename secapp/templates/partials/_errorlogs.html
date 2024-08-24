@@ -4,9 +4,8 @@
         <button type="button" class="btn btn-primary" onclick="location.href='{% url 'run_sql' %}';">
             Clear IPLogs SQL Table!
         </button>   
-        <button type="button" class="btn btn-primary" id="clear-event-logs-btn" data-bs-toggle="button"
-            autocomplete="off">
-            Clear Event Logs <span id="clear-event-logs-icon"></span>
+        <button type="button" class="btn btn-primary" id="clear-event-logs-btn" data-bs-toggle="button" autocomplete="off">
+            Clear Event Logs NOT WORK <span id="clear-event-logs-icon"></span>
         </button>
         <div class="mt-2 mb-2">
             <div class="row">
@@ -19,10 +18,70 @@
                         <li class="list-group-item">FileLogs Table Data: <span class="badge bg-primary">{{ file_logs_count }}</span></li>
                         <li class="list-group-item">News Table Data: <span class="badge bg-primary">{{ news_count }}</span></li>
                         <li class="list-group-item">EventDescription Table Data: <span class="badge bg-primary">{{ eventdescription_count }}</span></li>
-                        <li class="list-group-item">IPLogs Table Data: <span class="badge bg-primary">{{ iplogs_count }}</span></li>
+                        <!-- <li class="list-group-item">IPLogs Table Data: <span class="badge bg-primary">{{ iplogs_count }}</span></li> -->
                     </ul>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    // Function to get the value of a cookie by its name
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Check if the cookie starts with the target name
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Get the CSRF token from the cookies
+    var csrftoken = getCookie('csrftoken');
+
+    // Get the button element
+    var clearButton = document.getElementById('clear-event-logs-btn');
+
+    // Event listener for the "Clear Event Logs" button
+    clearButton.addEventListener('click', function () {
+        this.classList.add('loading'); // Add a loading class to the button
+        document.getElementById('clear-event-logs-icon').textContent = ''; // Clear the icon
+
+        // Send a POST request to clear the event logs
+        fetch('/clear-event-logs/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken // Include the CSRF token in the headers
+            }
+        })
+            .then(response => {
+                // If the response is a redirect, go to the redirected URL
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    // Otherwise, parse the response as JSON
+                    return response.json();
+                }
+            })
+            .then(data => {
+                if (data) {
+                    console.log(data); // Log the response data to the console
+                    document.getElementById('clear-event-logs-icon').textContent = '✔'; // Add a checkmark icon
+                    this.classList.remove('loading'); // Remove the loading class
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error); // Log any errors to the console
+                document.getElementById('clear-event-logs-icon').textContent = 'X'; // Add an error icon
+                this.classList.remove('loading'); // Remove the loading class
+            });
+    });
+</script>
