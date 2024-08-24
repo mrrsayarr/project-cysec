@@ -18,22 +18,29 @@ def eventlog(request):
     return render(request, 'eventlog.html', {'event_logs': event_logs})
 
 # File Watcher Start
-def filewatch(request):
-    file_logs = FileLogs.objects.all()  # Get all file logs
+# def filewatch(request):
+#     file_logs = FileLogs.objects.all()  # Get all file logs
     
-    if request.method == 'POST':
-        new_path = request.POST.get('new_path')
-        watch_path = WatchPaths.objects.first()
-        watch_path.path = new_path
-        watch_path.save()
-        return redirect('filewatch')
+#     if request.method == 'POST':
+#         new_path = request.POST.get('new_path')
+#         watch_path = WatchPaths.objects.first()
+#         watch_path.path = new_path
+#         watch_path.save()
+#         return redirect('filewatch')
 
-    current_path = WatchPaths.objects.first().path
-    return render(request, 'filewatch.html', {'file_logs': file_logs, 'current_path': current_path})
+#     current_path = WatchPaths.objects.first().path
+#     return render(request, 'filewatch.html', {'file_logs': file_logs, 'current_path': current_path})
 
-def get_logs(request):
+def get_file_logs(request): # Get File logs
     logs = FileLogs.objects.all().values('event_type', 'file_path', 'timestamp')
     logs_list = list(logs)  # important: convert the QuerySet to a list
+    return JsonResponse(logs_list, safe=False)
+
+def get_event_logs(request):
+    logs = Events.objects.all().values(
+        'ID', 'EventID', 'SourceName', 'Level', 'Channel', 'Message', 'PredictedValue', 'TimeGenerated'
+    )
+    logs_list = list(logs)
     return JsonResponse(logs_list, safe=False)
 
 def news(request):
@@ -100,17 +107,15 @@ def run_script(request):
 def stop_script(request):
     global process
     if process:
-        process.terminate()
-        # Add a waiting period to check if the process has ended
-        for _ in range(10):  # Check for 10 seconds
-            if process.poll() is not None:  # Process has ended
-                process = None
-                return JsonResponse({"status": "Script stopped"})
-            time.sleep(1)  # Wait 1 second between each check
-        return JsonResponse({"status": "Script could not be stopped"})
+        process.kill()  # Use kill instead of terminate
+        try:
+            process.wait(timeout=10)  # Wait for the process to end
+            process = None
+            return JsonResponse({"status": "Script stopped"})
+        except subprocess.TimeoutExpired:
+            return JsonResponse({"status": "Script could not be stopped"})
     else:
         return JsonResponse({"status": "Script is already stopped"})
-
 
 # POST request for Eventlog
 def run_log_collector(request):
@@ -136,4 +141,43 @@ def stop_log_collector(request):
     else:
         return JsonResponse({"status": "LogCollector script is already stopped"})
 
+
+# File Watcher Start
+def filewatch(request):
+    file_logs = FileLogs.objects.all()  # Get all file logs
     
+    if request.method == 'POST':
+        new_path = request.POST.get('new_path')
+        watch_path = WatchPaths.objects.first()
+        watch_path.path = new_path
+        watch_path.save()
+        return redirect('filewatch')
+
+    current_path = WatchPaths.objects.first().path
+    return render(request, 'filewatch.html', {'file_logs': file_logs, 'current_path': current_path})
+
+process = None  # Global process instance
+
+def start_watch(request):
+    global process
+    if request.method == 'POST':
+        if process is None or process.poll() is not None:
+            script_path = os.path.join(django_settings.SCRIPTS_DIR, 'FileWatchdog.py')
+            process = subprocess.Popen(['python', script_path])
+            return JsonResponse({'message': 'Watching started.', 'status': 'Watching started.'})
+        else:
+            return JsonResponse({'message': 'Watcher is already running.', 'status': 'Watcher is already running.'})
+
+def stop_watch(request):
+    global process
+    if request.method == 'POST':
+        if process is not None and process.poll() is None:
+            process.terminate()
+            for _ in range(10):  # Check for 10 seconds
+                if process.poll() is not None:  # Process has ended
+                    process = None
+                    return JsonResponse({'message': 'Watching stopped.', 'status': 'Watching stopped.'})
+                time.sleep(1)  # Wait 1 second between each check
+            return JsonResponse({'message': 'Watcher could not be stopped.', 'status': 'Watcher could not be stopped.'})
+        else:
+            return JsonResponse({'message': 'No watcher to stop.', 'status': 'No watcher to stop.'})

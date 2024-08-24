@@ -31,5 +31,7 @@ urlpatterns = [
     path('start_watch', views.start_watch, name='start_watch'),
     path('stop_watch', views.stop_watch, name='stop_watch'),
     path('clear_logs', views.clear_logs, name='clear_logs'), # Clear Logs
-    path('get_logs', views.get_logs, name='get_logs'), # Get Logs NOW!
+    path('get_file_logs', views.get_file_logs, name='get_file_logs'), # Get Logs for file watchers
+    path('get-event-logs/', views.get_event_logs),  # Get Logs for eventlogs
+    
 ]
