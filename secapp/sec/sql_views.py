@@ -52,3 +52,4 @@ def clear_logs(request):
     if request.method == 'POST':
         FileLogs.objects.all().delete()  # Tüm FileLog kayıtlarını sil
         return JsonResponse({'message': 'Logs cleared.'})
+

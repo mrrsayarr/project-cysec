@@ -2,7 +2,7 @@ import os
 import time
 import subprocess
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from sec.models import Events, Iplogs, FileLogs, ErrorLogs, News, Eventdescription, WatchPaths
 from django.conf import settings as django_settings  # 'settings' modülünü 'django_settings' olarak import edin
 from .sql_views import *
@@ -181,3 +181,59 @@ def stop_watch(request):
             return JsonResponse({'message': 'Watcher could not be stopped.', 'status': 'Watcher could not be stopped.'})
         else:
             return JsonResponse({'message': 'No watcher to stop.', 'status': 'No watcher to stop.'})
+
+# Port Scanner views
+def port_scanner(request):
+    return render(request, 'port_scanner.html')
+
+def port_results(request):
+    open_ports = request.session.get('open_ports', [])  # Oturumdan 'open_ports' listesini alın
+    return render(request, 'port_results.html', {'open_ports': open_ports})
+
+# Port Scanner
+import socket
+import threading
+import re
+from django.contrib import messages
+from django.shortcuts import render, redirect
+
+def port_scanner(request):
+    open_ports = []
+    if request.method == 'POST':
+        target_ip = request.POST.get('ip_address')
+        port_min = int(request.POST.get('port_min'))
+        port_max = int(request.POST.get('port_max'))
+
+        messages.info(request, 'Port scanning started.')
+
+        threads = []
+        for port in range(port_min, port_max + 1):
+            thread = threading.Thread(target=scan_port, args=(target_ip, port, open_ports))
+            threads.append(thread)
+            thread.start()
+
+        for thread in threads: # Wait for all threads to complete
+            thread.join()
+
+        if not open_ports:
+            messages.info(request, 'No open ports found.')
+        else:
+            messages.success(request, 'Port scanning completed.')
+
+        request.session['open_ports'] = open_ports
+        return redirect('port_results')
+
+    return render(request, 'port_scanner.html')
+
+
+def scan_port(target_ip, port, open_ports):
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.settimeout(2)
+            result = sock.connect_ex((target_ip, port))
+            if result == 0:
+                open_ports.append((port, "OPEN"))
+    except socket.timeout:
+        open_ports.append((port, "FILTERED"))
+    except Exception as e:
+        pass  # Error handling can be added here

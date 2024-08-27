@@ -34,4 +34,7 @@ urlpatterns = [
     path('get_file_logs', views.get_file_logs, name='get_file_logs'), # Get Logs for file watchers
     path('get-event-logs/', views.get_event_logs),  # Get Logs for eventlogs
     
+    # Port Scanner
+    path('port_scanner/', views.port_scanner, name='port_scanner'),
+    path('port_results/', views.port_results, name='port_results'),
 ]
