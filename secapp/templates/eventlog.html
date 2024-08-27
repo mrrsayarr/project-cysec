@@ -12,7 +12,7 @@ Event Logs
     <div class="row g-4">
         <!-- Event Logs Start -->
         <div class="container-fluid">
-            <h1 class="">Event Logs</h1>
+            <h1 class="">Event Logs | EKLENECEK İFADELERİ JS İÇERİSİNE YAZARSAN HATALAR AZALABİLİR</h1>
             <table class="table table-dark table-striped">
                 <thead>
                     <tr>
@@ -28,20 +28,22 @@ Event Logs
                 <tbody>
                     {% for event in event_logs %}
                     <tr>
-                      <td>{{ event.EventID }}</td>
-                      <td>{{ event.SourceName }}</td>
-                      <td>{{ event.Level }}</td>
-                      <td>{{ event.Channel }}</td>
-                      <td>
-                        {{ event.PredictedValue }}
-                        <span class="badge {% if event.PredictedValue == 0 %}bg-success{% elif event.PredictedValue >= 1 and event.PredictedValue <= 3 %}bg-warning{% elif event.PredictedValue >= 4 and event.PredictedValue <= 5 %}bg-danger{% endif %}">
-                          {% if event.PredictedValue == 0 %}Safe{% elif event.PredictedValue >= 1 and event.PredictedValue <= 3 %}Warning{% elif event.PredictedValue >= 4 and event.PredictedValue <= 5 %}Danger{% endif %}
-                        </span>
-                      </td>
-                      <td>{{ event.TimeGenerated }}</td>
+                        <td>{{ event.EventID }}</td>
+                        <td>{{ event.SourceName }}</td>
+                        <td>{{ event.Level }}</td>
+                        <td>{{ event.Channel }}</td>
+                        <td>
+                            {{ event.PredictedValue }}
+                            <span
+                                class="badge {% if event.PredictedValue == 0 %}bg-success{% elif event.PredictedValue >= 1 and event.PredictedValue <= 3 %}bg-warning{% elif event.PredictedValue >= 4 and event.PredictedValue <= 5 %}bg-danger{% endif %}">
+                                {% if event.PredictedValue == 0 %}Safe{% elif event.PredictedValue >= 1 and
+                                event.PredictedValue <= 3 %}Warning{% elif event.PredictedValue>= 4 and
+                                    event.PredictedValue <= 5 %}Danger{% endif %} </span>
+                        </td>
+                        <td>{{ event.TimeGenerated }}</td>
                     </tr>
                     {% endfor %}
-                  </tbody>
+                </tbody>
             </table>
         </div>
         <!-- Event Logs End -->
@@ -50,61 +52,40 @@ Event Logs
 
 <script>
     function updateTable() {
-    fetch('/get-event-logs/')
-        .then(response => response.json())
-        .then(data => {
-            let tableBody = document.querySelector('.table tbody');
-            tableBody.innerHTML = '';
+        fetch('/get-event-logs/')
+            .then(response => response.json())
+            .then(data => {
+                let tableBody = document.querySelector('.table tbody');
+                tableBody.innerHTML = ''; // Tabloyu temizle
 
-            data.forEach(event => {  // Use 'event' instead of 'log' for consistency
-                let row = document.createElement('tr');
+                data.forEach(event => {
+                    let row = document.createElement('tr');
 
-                let cellEventID = document.createElement('td');
-                cellEventID.textContent = event.EventID;
-                row.appendChild(cellEventID);
+                    row.innerHTML = `
+                        <td>${event.EventID}</td>
+                        <td>${event.SourceName}</td>
+                        <td>${event.Level}</td>
+                        <td>${event.Channel}</td>
+                        <td>
+                            ${event.PredictedValue} 
+                            <span class="badge ${event.PredictedValue == 0 ? 'bg-success' :
+                                            (event.PredictedValue >= 1 && event.PredictedValue <= 3) ? 'bg-warning' :
+                                                (event.PredictedValue >= 4 && event.PredictedValue <= 5) ? 'bg-danger' : ''}">
+                            ${event.PredictedValue == 0 ? 'Safe' :
+                                            (event.PredictedValue >= 1 && event.PredictedValue <= 3) ? 'Warning' :
+                                                (event.PredictedValue >= 4 && event.PredictedValue <= 5) ? 'Danger' : ''}
+                            </span>
+                        </td>
+                        <td>${event.TimeGenerated}</td>
+                        `;
 
-                let cellSourceName = document.createElement('td');
-                cellSourceName.textContent = event.SourceName;
-                row.appendChild(cellSourceName);
-
-                let cellLevel = document.createElement('td');
-                cellLevel.textContent = event.Level;
-                row.appendChild(cellLevel);
-
-                let cellChannel = document.createElement('td');
-                cellChannel.textContent = event.Channel;
-                row.appendChild(cellChannel);
-
-                // Predicted Value with badges
-                let cellPredictedValue = document.createElement('td');
-                cellPredictedValue.textContent = event.PredictedValue;
-
-                let badge = document.createElement('span');
-                if (event.PredictedValue == 0) {
-                    badge.classList.add('badge', 'bg-success');
-                    badge.textContent = 'Safe';
-                } else if (event.PredictedValue >= 1 && event.PredictedValue <= 3) {
-                    badge.classList.add('badge', 'bg-warning');
-                    badge.textContent = 'Warning';
-                } else if (event.PredictedValue >= 4 && event.PredictedValue <= 5) {
-                    badge.classList.add('badge', 'bg-danger');
-                    badge.textContent = 'Danger';
-                }
-
-                cellPredictedValue.appendChild(badge);
-                row.appendChild(cellPredictedValue);
-
-                let cellTimeGenerated = document.createElement('td');
-                cellTimeGenerated.textContent = event.TimeGenerated;
-                row.appendChild(cellTimeGenerated);
-
-                tableBody.appendChild(row);
+                    tableBody.appendChild(row);
+                });
             });
-        });
-}
+    }
 
-updateTable();
-setInterval(updateTable, 5000);
+    updateTable();
+    setInterval(updateTable, 5000);
 </script>
 
 {% endblock %}

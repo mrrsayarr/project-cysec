@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}
+Port Scan Results
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid pt-4 px-4">
+    <h1>Port Scan Results</h1>
+    {% if open_ports %}
+    <ul class="list-group"></ul>
+    {% for port, status in open_ports %}
+    <li class="list-group-item">Port: {{ port }}, Status: {{ status }}</li>
+    {% endfor %}
+    </ul>
+    {% else %}
+    <p class="alert alert-info">No open ports found.</p>
+    {% endif %}
+    
+    <div class="mt-5">
+        <h2>Well-Known Ports</h2>
+        <table class="table table-dark table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Port</th>
+                    <th>Protocol</th>
+                    <th>Service</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>20</td>
+                    <td>TCP</td>
+                    <td>FTP (Data)</td>
+                    <td>Used for File Transfer Protocol data transfer.</td>
+                </tr>
+                <tr>
+                    <td>21</td>
+                    <td>TCP</td>
+                    <td>FTP (Control)</td>
+                    <td>Used for File Transfer Protocol connection and commands.</td>
+                </tr>
+                <tr>
+                    <td>22</td>
+                    <td>TCP</td>
+                    <td>SSH</td>
+                    <td>Used for secure remote login (Secure Shell).</td>
+                </tr>
+                <tr>
+                    <td>23</td>
+                    <td>TCP</td>
+                    <td>Telnet</td>
+                    <td>An older protocol used for remote login (insecure).</td>
+                </tr>
+                <tr>
+                    <td>25</td>
+                    <td>TCP</td>
+                    <td>SMTP</td>
+                    <td>Used for sending email (Simple Mail Transfer Protocol).</td>
+                </tr>
+                <tr>
+                    <td>53</td>
+                    <td>TCP/UDP</td>
+                    <td>DNS</td>
+                    <td>Used to translate domain names to IP addresses (Domain Name System).</td>
+                </tr>
+                <tr>
+                    <td>80</td>
+                    <td>TCP</td>
+                    <td>HTTP</td>
+                    <td>Used to access web pages (Hypertext Transfer Protocol).</td>
+                </tr>
+                <tr>
+                    <td>110</td>
+                    <td>TCP</td>
+                    <td>POP3</td>
+                    <td>Used to retrieve email (Post Office Protocol version 3).</td>
+                </tr>
+                <tr>
+                    <td>143</td>
+                    <td>TCP</td>
+                    <td>IMAP</td>
+                    <td>Used to retrieve email (Internet Message Access Protocol).</td>
+                </tr>
+                <tr>
+                    <td>443</td>
+                    <td>TCP</td>
+                    <td>HTTPS</td>
+                    <td>Used to access web pages securely (Hypertext Transfer Protocol Secure).</td>
+                </tr>
+                <tr>
+                    <td>3306</td>
+                    <td>TCP</td>
+                    <td>MySQL</td>
+                    <td>A popular database management system.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

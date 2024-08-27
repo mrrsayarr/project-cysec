@@ -6,153 +6,22 @@ To-Do List App
 
 {% block content %}
 
-
-<style>
-    /* Global Çerçeve */
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
-
-    /* RGB Renk Kodları */
-    :root {
-        --main-color: #3483a6;
-        --secondary-color: #d97d54;
-    }
-
-    /* Body Ayarları */
-    body {
-        background-color: #f6f6f6;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        font-size: 16px;
-        height: 100vh;
-    }
-
-    /* Başlık */
-    header {
-        background-color: var(--main-color);
-        color: #fff;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 80px;
-    }
-
-    header h1 {
-        margin-bottom: 5px;
-        font-family: 'Font Name', sans-serif;
-    }
-
-    /* Ana Container */
-    .container {
-        max-width: auto !important;
-        margin: 0 auto;
-        margin-top: 20px;
-        padding: 20px;
-        background-color: #fff;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Öğe Ekleme Formu */
-    form {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    form input[type="text"] {
-        flex: 1;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 3px;
-        font-size: 1rem;
-        margin-right: 10px;
-    }
-
-    form button[type="submit"] {
-        background-color: var(--main-color);
-        color: #fff;
-        border: none;
-        border-radius: 3px;
-        padding: 10px 20px;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: all 0.3s ease-in-out;
-        outline: none;
-    }
-
-    form button[type="submit"]:hover,
-    form button[type="submit"]:focus {
-        background-color: var(--secondary-color);
-    }
-
-    /* Öğelerin Listesi */
-    ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        border-bottom: 1px solid #ddd;
-    }
-
-    ul li:last-child {
-        border-bottom: none;
-    }
-
-    ul li {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 5px 0;
-        font-size: 1.2rem;
-        margin-top: 5px;
-    }
-
-    ul li span {
-        flex: 1;
-    }
-
-    ul li button {
-        background-color: #e74c3c;
-        color: #fff;
-        border: none;
-        border-radius: 3px;
-        font-size: 1rem;
-        padding: 5px 10px;
-        cursor: pointer;
-        transition: all 0.3s ease-in-out;
-        outline: none;
-    }
-
-    ul li button:hover,
-    ul li button:focus {
-        background-color: var(--secondary-color);
-    }
-
-    .newItem,
-    .InputText {
-        overflow-y: auto;
-        overflow-x: auto;
-        max-height: auto;
-    }
-</style>
-
-<div class="container-fluid pt-4 px-4">
-    <form>
-        <input type="text" class="InputText" placeholder="What do you need to do today?" id="itemInput">
-        <button type="submit" id="addButton">Add</button>
+<div class="container-fluid pt-4 px-4"> 
+    <form id="addItemForm" class="mb-3">
+        <div class="input-group">
+            <input type="text" class="form-control bg-white" placeholder="What do you need to do today?" id="itemInput">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit" id="addButton">Add</button>
+            </div>
+        </div>
     </form>
-    <br>
-    <ul class="InputText" id="itemList">
 
-    </ul>
+    <h2>Items</h2>
+    <ul class="list-group" id="itemList"></ul>
 
-    <form>
-        <button id="showDeletedButton" class="btn btn-primary mt-2 mb-2">Show Deleted Items</button>
-    </form>
-    <ul class="InputText" id="deletedItemList"></ul>
+    <h2 class="mt-4">Deleted Items</h2>
+    <button id="showDeletedButton" class="btn btn-outline-primary mb-2">Show Deleted Items</button>
+    <ul class="list-group" id="deletedItemList"></ul>
 </div>
 
 <script>
@@ -160,168 +29,115 @@ To-Do List App
     const input = document.querySelector("#itemInput");
     const addButton = document.querySelector("#addButton");
     const itemList = document.querySelector("#itemList");
+    const deletedItemList = document.querySelector("#deletedItemList");
+    const showDeletedButton = document.querySelector("#showDeletedButton");
 
     // Yerel depolama kullanarak, önceden kaydedilmiş verileri al
     let toDoItems = localStorage.getItem("toDoItems") ? JSON.parse(localStorage.getItem("toDoItems")) : [];
+    let deletedItems = localStorage.getItem("deletedItems") ? JSON.parse(localStorage.getItem("deletedItems")) : [];
 
     // Ekleme Fonksiyonu
     function addItem(event) {
-        // Sayfa yenilenmesini engellemek
-        event.preventDefault();
-
-        // Öğe input değeri
+        event.preventDefault(); // Sayfa yenilenmesini engelle
         let newItem = input.value.trim();
 
         if (newItem.length === 0) {
             alert("Please enter a to-do item.");
-            return false;
+            return;
         }
 
-        // Array'e değer ekleme
         toDoItems.push(newItem);
-
-        // Yerel depolama alanına öğeleri yaz
         localStorage.setItem("toDoItems", JSON.stringify(toDoItems));
 
-        // Yeni öğe <li> oluşturma
-        let listItem = document.createElement("li");
-        listItem.innerHTML = `<span class="newItem">${newItem}</span>
-                        <button class="removeButton">Remove</button>`;
-        itemList.appendChild(listItem);
-
-        // Input değerini temizleme
+        addItemToDom(newItem, itemList);
         input.value = "";
-
-        // Öğeyi silme
-        let removeButton = listItem.querySelector(".removeButton");
-        removeButton.addEventListener("click", removeItem);
     }
 
-    // Öğeyi silme fonksiyonu
-    function removeItem(event) {
-        let itemIndex = toDoItems.indexOf(event.target.previousSibling.textContent);
-        toDoItems.splice(itemIndex, 1);
-
-        // Yerel depolama alanını güncelleme
-        localStorage.setItem("toDoItems", JSON.stringify(toDoItems));
-
-        itemList.removeChild(event.target.parentNode);
-    }
-
-    // Yerel depolamadan önceden kaydedilmiş öğeleri gösterme
-    toDoItems.forEach(item => {
+    // Öğe DOM'a ekleme
+    function addItemToDom(item, list) {
         let listItem = document.createElement("li");
+        listItem.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
         listItem.innerHTML = `<span>${item}</span>
-                        <button class="removeButton">Remove</button>`;
-        itemList.appendChild(listItem);
+                        <button class="btn btn-danger btn-sm removeButton">Remove</button>`;
+        list.appendChild(listItem);
 
         let removeButton = listItem.querySelector(".removeButton");
-        removeButton.addEventListener("click", removeItem);
-    });
-
-    // Ekleme butonuna tıklanınca addItem fonksiyonunu çalıştır
-    addButton.addEventListener("click", addItem);
-
-    const showDeletedButton = document.querySelector("#showDeletedButton");
-    const deletedItemList = document.querySelector("#deletedItemList");
-
-    let deletedItems = localStorage.getItem("deletedItems") ? JSON.parse(localStorage.getItem("deletedItems")) : [];
-
-    showDeletedButton.addEventListener("click", function () {
-        deletedItemList.innerHTML = "";  // Listeyi temizle
-        deletedItems.forEach(item => {
-            let listItem = document.createElement("li");
-            listItem.innerHTML = `<span>${item}</span>
-                        <button class="restoreButton">Restore</button>
-                        <button class="permanentlyDeleteButton">Permanently Delete</button>`;
-            deletedItemList.appendChild(listItem);
-
-            let restoreButton = listItem.querySelector(".restoreButton");
-            restoreButton.addEventListener("click", function () {
-                // Öğeyi geri yükle
-                toDoItems.push(item);
-                localStorage.setItem("toDoItems", JSON.stringify(toDoItems));
-
-                // Silinen öğeler listesinden kaldır
-                let itemIndex = deletedItems.indexOf(item);
-                deletedItems.splice(itemIndex, 1);
-                localStorage.setItem("deletedItems", JSON.stringify(deletedItems));
-
-                listItem.remove();
-            });
-
-            let permanentlyDeleteButton = listItem.querySelector(".permanentlyDeleteButton");
-            permanentlyDeleteButton.addEventListener("click", function () {
-                // Silinen öğeler listesinden kaldır
-                let itemIndex = deletedItems.indexOf(item);
-                deletedItems.splice(itemIndex, 1);
-                localStorage.setItem("deletedItems", JSON.stringify(deletedItems));
-
-                listItem.remove();
-            });
-        });
-    });
+        removeButton.addEventListener("click", () => removeItem(item, listItem));
+    }
 
     // Öğeyi silme fonksiyonu
-    function removeItem(event) {
-        let itemIndex = toDoItems.indexOf(event.target.previousSibling.textContent);
-        let item = toDoItems.splice(itemIndex, 1)[0];
+    function removeItem(item, listItem) {
+        let itemIndex = toDoItems.indexOf(item);
+        if (itemIndex > -1) {
+            toDoItems.splice(itemIndex, 1);
+            localStorage.setItem("toDoItems", JSON.stringify(toDoItems));
+            itemList.removeChild(listItem);
 
-        // Yerel depolama alanını güncelleme
-        localStorage.setItem("toDoItems", JSON.stringify(toDoItems));
+            // Silinen öğeler listesine ekle
+            deletedItems.push(item);
+            localStorage.setItem("deletedItems", JSON.stringify(deletedItems));
+            updateDeletedItemsList();
+        }
+    }
 
-        // Silinen öğeler listesine ekle
-        deletedItems.push(item);
-        localStorage.setItem("deletedItems", JSON.stringify(deletedItems));
+    // Öğeyi geri yükleme
+    function restoreItem(item, listItem) {
+        let itemIndex = deletedItems.indexOf(item);
+        if (itemIndex > -1) {
+            deletedItems.splice(itemIndex, 1);
+            localStorage.setItem("deletedItems", JSON.stringify(deletedItems));
+            deletedItemList.removeChild(listItem);
 
-        itemList.removeChild(event.target.parentNode);
+            // To-Do listesine geri ekle
+            toDoItems.push(item);
+            localStorage.setItem("toDoItems", JSON.stringify(toDoItems));
+            addItemToDom(item, itemList);
+        }
+    }
 
-        // Silinen öğeler listesini güncelle
-        updateDeletedItemsList();
+    // Öğeyi kalıcı olarak silme
+    function permanentlyDeleteItem(item, listItem) {
+        let itemIndex = deletedItems.indexOf(item);
+        if (itemIndex > -1) {
+            deletedItems.splice(itemIndex, 1);
+            localStorage.setItem("deletedItems", JSON.stringify(deletedItems));
+            deletedItemList.removeChild(listItem);
+        }
     }
 
     // Silinen öğeler listesini güncelleme fonksiyonu
     function updateDeletedItemsList() {
-        deletedItemList.innerHTML = "";  // Listeyi temizle
+        deletedItemList.innerHTML = "";
         deletedItems.forEach(item => {
-            let listItem = document.createElement("li");
-            listItem.innerHTML = `<span>${item}</span>
-                    <button class="restoreButton m-1">Restore</button>
-                    <button class="permanentlyDeleteButton m-1">Permanently Delete</button>`;
-            deletedItemList.appendChild(listItem);
+            addItemToDom(item, deletedItemList);
+            let listItem = deletedItemList.lastChild;
 
-            let restoreButton = listItem.querySelector(".restoreButton");
-            restoreButton.addEventListener("click", function () {
-                // Öğeyi geri yükle
-                toDoItems.push(item);
-                localStorage.setItem("toDoItems", JSON.stringify(toDoItems));
+            // Restore butonunu güncelle
+            let restoreButton = listItem.querySelector(".removeButton");
+            restoreButton.classList.remove("btn-danger");
+            restoreButton.classList.add("btn-success");
+            restoreButton.textContent = "Restore";
+            restoreButton.addEventListener("click", () => restoreItem(item, listItem));
 
-                // Silinen öğeler listesinden kaldır
-                let itemIndex = deletedItems.indexOf(item);
-                deletedItems.splice(itemIndex, 1);
-                localStorage.setItem("deletedItems", JSON.stringify(deletedItems));
-
-                listItem.remove();
-
-                // Sayfayı yenile
-                location.reload();
-            });
-
-            let permanentlyDeleteButton = listItem.querySelector(".permanentlyDeleteButton");
-            permanentlyDeleteButton.addEventListener("click", function () {
-                // Silinen öğeler listesinden kaldır
-                let itemIndex = deletedItems.indexOf(item);
-                deletedItems.splice(itemIndex, 1);
-                localStorage.setItem("deletedItems", JSON.stringify(deletedItems));
-
-                listItem.remove();
-            });
+            // Kalıcı silme butonu ekle
+            let permanentlyDeleteButton = document.createElement("button");
+            permanentlyDeleteButton.classList.add("btn", "btn-danger", "btn-sm", "permanentlyDeleteButton");
+            permanentlyDeleteButton.textContent = "Delete";
+            listItem.appendChild(permanentlyDeleteButton);
+            permanentlyDeleteButton.addEventListener("click", () => permanentlyDeleteItem(item, listItem));
         });
     }
+
+    // Yerel depolamadan önceden kaydedilmiş öğeleri gösterme
+    toDoItems.forEach(item => addItemToDom(item, itemList));
     // İlk yükleme sırasında silinen öğeler listesini güncelle
     updateDeletedItemsList();
 
+    // Event Listener'lar
+    addButton.addEventListener("click", addItem);
+    showDeletedButton.addEventListener("click", () => {
+        deletedItemList.classList.toggle("d-none");
+    });
 </script>
-
 
 {% endblock %}
