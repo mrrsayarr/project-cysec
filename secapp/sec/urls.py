@@ -37,4 +37,10 @@ urlpatterns = [
     # Port Scanner
     path('port_scanner/', views.port_scanner, name='port_scanner'),
     path('port_results/', views.port_results, name='port_results'),
+
+    # Task Controller
+    path('task-controller/', views.task_controller, name='task_controller'),
+    path('get-processes/', views.get_processes, name='get_processes'),
+    path('kill-process/', views.kill_process, name='kill_process'),
+    
 ]

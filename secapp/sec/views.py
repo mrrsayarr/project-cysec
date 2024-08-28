@@ -206,13 +206,19 @@ def port_scanner(request):
 
         messages.info(request, 'Port scanning started.')
 
+        # İş parçacıklarını daha etkili kullanmak için port aralığını böl
+        num_threads = 10  # Kullanılacak iş parçacığı sayısı
+        ports_per_thread = (port_max - port_min + 1) // num_threads
+
         threads = []
-        for port in range(port_min, port_max + 1):
-            thread = threading.Thread(target=scan_port, args=(target_ip, port, open_ports))
+        for i in range(num_threads):
+            start_port = port_min + i * ports_per_thread
+            end_port = min(start_port + ports_per_thread, port_max + 1)
+            thread = threading.Thread(target=scan_port_range, args=(target_ip, start_port, end_port, open_ports))
             threads.append(thread)
             thread.start()
 
-        for thread in threads: # Wait for all threads to complete
+        for thread in threads:
             thread.join()
 
         if not open_ports:
@@ -225,15 +231,63 @@ def port_scanner(request):
 
     return render(request, 'port_scanner.html')
 
+def scan_port_range(target_ip, start_port, end_port, open_ports):
+    lock = threading.Lock() # threadler arası senkronizasyon için kilit ekledik
+    for port in range(start_port, end_port):
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+                sock.settimeout(3)  # Zaman aşımını 3 saniyeye çıkar
+                result = sock.connect_ex((target_ip, port))
+                if result == 0:
+                    with lock:
+                        open_ports.append((port, "OPEN"))
+        except socket.timeout:
+            with lock:
+                open_ports.append((port, "FILTERED"))
+        except Exception as e:
+            # Hata mesajlarını logla
+            print(f"Port {port} taraması sırasında hata oluştu: {e}") 
 
-def scan_port(target_ip, port, open_ports):
-    try:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-            sock.settimeout(2)
-            result = sock.connect_ex((target_ip, port))
-            if result == 0:
-                open_ports.append((port, "OPEN"))
-    except socket.timeout:
-        open_ports.append((port, "FILTERED"))
-    except Exception as e:
-        pass  # Error handling can be added here
+
+# Task Contoller
+import psutil
+
+def task_controller(request):
+    """Görev yöneticisi arayüzünü görüntüler."""
+    return render(request, 'task_controller.html')
+
+def get_processes(request):
+    """Çalışan işlemlerin bilgilerini alır ve JSON formatında döndürür."""
+    processes = []
+    for proc in psutil.process_iter(['pid', 'name', 'cpu_percent', 'memory_percent', 'cmdline']):
+        try:
+            cmdline = proc.info['cmdline']
+            if cmdline: # cmdline bilgisinin var olup olmadığını kontrol et
+                cmdline = ' '.join(cmdline) 
+            else:
+                cmdline = '' # Eğer cmdline bilgisi yoksa, boş string ata
+
+            processes.append({
+                'pid': proc.info['pid'],
+                'name': proc.info['name'],
+                'cpu_percent': proc.info['cpu_percent'],
+                'memory_percent': proc.info['memory_percent'],
+                'cmdline': cmdline 
+            })
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            pass
+    return JsonResponse({'processes': processes})
+
+def kill_process(request):
+    """Gelen istekteki işlem ID'sine göre işlemi sonlandırır."""
+    if request.method == 'POST':
+        pid = int(request.POST.get('pid', 0))
+        try:
+            process = psutil.Process(pid)
+            process.kill()
+            return JsonResponse({'status': 'success', 'message': f'Process {pid} killed successfully.'})
+        except psutil.NoSuchProcess:
+            return JsonResponse({'status': 'error', 'message': f'Process {pid} not found.'})
+        except psutil.AccessDenied:
+            return JsonResponse({'status': 'error', 'message': f'Access denied to kill process {pid}.'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request.'})
