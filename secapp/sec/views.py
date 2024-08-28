@@ -63,6 +63,7 @@ def iplogs(request):
         iplogs_list.append(iplog_dict)
     return render(request, 'iplogs.html', {'iplogs': iplogs_list})
 
+#####################################################################################
 def settings(request):
     # Count Logs 
     iplogs_count = Iplogs.objects.count()
@@ -95,6 +96,7 @@ def settings(request):
 def todo(request):
     return render(request, 'todo.html')
 
+#####################################################################################
 # POST request for IPLogs
 process = None # Global variable to store the process
 
@@ -117,6 +119,7 @@ def stop_script(request):
     else:
         return JsonResponse({"status": "Script is already stopped"})
 
+#####################################################################################
 # POST request for Eventlog
 def run_log_collector(request):
     global process
@@ -141,7 +144,7 @@ def stop_log_collector(request):
     else:
         return JsonResponse({"status": "LogCollector script is already stopped"})
 
-
+#####################################################################################
 # File Watcher Start
 def filewatch(request):
     file_logs = FileLogs.objects.all()  # Get all file logs
@@ -182,6 +185,7 @@ def stop_watch(request):
         else:
             return JsonResponse({'message': 'No watcher to stop.', 'status': 'No watcher to stop.'})
 
+#####################################################################################
 # Port Scanner views
 def port_scanner(request):
     return render(request, 'port_scanner.html')
@@ -248,7 +252,7 @@ def scan_port_range(target_ip, start_port, end_port, open_ports):
             # Hata mesajlarını logla
             print(f"Port {port} taraması sırasında hata oluştu: {e}") 
 
-
+#####################################################################################
 # Task Contoller
 import psutil
 
@@ -291,3 +295,5 @@ def kill_process(request):
         except psutil.AccessDenied:
             return JsonResponse({'status': 'error', 'message': f'Access denied to kill process {pid}.'})
     return JsonResponse({'status': 'error', 'message': 'Invalid request.'})
+
+#####################################################################################
