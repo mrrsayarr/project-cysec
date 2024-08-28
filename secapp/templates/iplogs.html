@@ -9,61 +9,109 @@ IP Logs
 {% include 'partials/_ipcontroller.html' %}
 
 <div class="container-fluid pt-4 px-4">
-    <div class="row g-4">
-        <!-- Logs Start -->
-        <div class="container-fluid">
-            <h1 class="my-4">IP Logs</h1>
-            <!-- <span class="rounded-circle p-1 blinking-dot"></span> -->
-            <table class="table table-dark table-striped">
-                <thead>
-                    <tr>
-                        <th>PID</th>
-                        <th>Process</th>
-                        <th>Local IP</th>
-                        <th>Local Port</th>
-                        <th>Remote IP</th>
-                        <th>Remote Port</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for iplog in iplogs %}
-                    <tr>
-                        <td>{{ iplog.PID }}</td>
-                        <td>{{ iplog.Process }}</td>
-                        <td>{{ iplog.LocalIp }}</td>
-                        <td>{{ iplog.LocalPort }}</td>
-                        <td>
-                            <span class="rounded-circle p-1 blinking-dot"></span>
-                            {{ iplog.RemoteIp }}
-                            {% if iplog.Type == "Public" %}
-                            
-                            {% endif %}
-                        </td>
-                        <td>{{ iplog.RemotePort }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <!-- Logs End -->
-    </div>
+    <h1 class="my-4">IP Logs</h1>
+    <table class="table table-dark table-striped table-hover">
+        <thead>
+            <tr>
+                <th>PID</th>
+                <th>Process</th>
+                <th>Local IP</th>
+                <th>Local Port</th>
+                <th>Remote IP</th>
+                <th>Remote Port</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for iplog in iplogs %}
+            <tr>
+                <td>{{ iplog.PID }}</td>
+                <td>{{ iplog.Process }}</td>
+                <td>{{ iplog.LocalIp }}</td>
+                <td>{{ iplog.LocalPort }}</td>
+                <td>{{ iplog.RemoteIp }}</td>
+                <td>{{ iplog.RemotePort }}</td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#processModal{{ iplog.PID }}">
+                        Details
+                    </button>
+                </td>
+            </tr>
+
+            <!-- Modal for each IP log -->
+            <div class="modal fade text-dark" id="processModal{{ iplog.PID }}" tabindex="-1"
+                aria-labelledby="processModalLabel{{ iplog.PID }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-dark" id="processModalLabel{{ iplog.PID }}">Process Information for PID {{ iplog.PID }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" style="word-wrap: break-word;">
+                            <p><strong>PID:</strong> {{ iplog.PID }}</p>
+                            <p><strong>Process:</strong> {{ iplog.Process }}</p>
+                            <p><strong>Local IP:</strong> {{ iplog.LocalIp }}</p>
+                            <p><strong>Local Port:</strong> {{ iplog.LocalPort }}</p>
+                            <p><strong>Remote IP:</strong> {{ iplog.RemoteIp }}</p>
+                            <p><strong>Remote Port:</strong> {{ iplog.RemotePort }}</p>
+                            <p><strong>Protocol:</strong> {{ iplog.Protocol }}</p>
+                            <p><strong>Start Time:</strong> {{ iplog.StartTime }}</p>
+                            <p><strong>Communication Protocol:</strong> {{ iplog.CommunicationProtocol }}</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary btn-sm"
+                                onclick="copyToClipboard('{{ iplog.RemoteIp }}')">
+                                <i class="bi bi-clipboard">Copy Remote IP</i>
+                            </button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
-<!-- Specially CSS Start -->
+<!-- Include Bootstrap JS and jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-beta1/js/bootstrap.min.js"></script>
+
+<!-- Optional CSS -->
 <style>
     .blinking-dot {
         background-color: red;
         display: inline-block;
         animation: blink 1s linear infinite;
-        width: 1%;  /* Noktanın genişliğini ayarlar */
-        height: 1%; /* Noktanın yüksekliğini ayarlar */
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
     }
+
     @keyframes blink {
-        0% { opacity: 0; }
-        50% { opacity: 1; }
-        100% { opacity: 0; }
+        0% {
+            opacity: 0;
+        }
+
+        50% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+        }
     }
 </style>
-<!-- Specially CSS End -->
+
+<script>
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(function() {
+            console.log('Copying to clipboard was successful!');
+        }, function(err) {
+            console.error('Could not copy text: ', err);
+        });
+    }
+</script>
 
 {% endblock %}
