@@ -337,4 +337,82 @@ def arp_monitor(request):
     return render(request, 'arp_monitor.html')
 
 #####################################################################################
- 
+# Firewall Monitor
+import subprocess
+from django.shortcuts import redirect, get_object_or_404
+from .models import FirewallRule
+# from .models import Rule
+
+def firewall_monitor(request):
+    """Güvenlik duvarı izleme arayüzünü görüntüler."""
+    rules = FirewallRule.objects.all()
+    return render(request, 'firewall_monitor.html', {'rules': rules})
+
+def get_firewall_logs(request):
+    """Güvenlik duvarı günlüklerini alır ve analiz eder."""
+    # Örnek: iptables günlüklerini okuyun (sisteminize göre özelleştirin)
+    try:
+        log_output = subprocess.check_output(['sudo', 'iptables', '-L', '-vn']).decode('utf-8')
+        log_lines = log_output.split('\n')
+
+        # Basit şüpheli aktivite tespiti (geliştirilebilir)
+        suspicious_events = [line for line in log_lines if 'DROP' in line and 'dport=80' in line]
+
+        return JsonResponse({'logs': log_lines, 'suspicious': suspicious_events})
+    except Exception as e:
+        return JsonResponse({'error': str(e)})
+
+def add_rule(request):
+    """Yeni bir güvenlik duvarı kuralı ekler."""
+    if request.method == 'POST':
+        form_data = request.POST  
+        # Form verilerini doğrulayın ve yeni FirewallRule nesnesi oluşturun
+        # ...
+        new_rule = FirewallRule(
+            name=form_data['name'],
+            description=form_data['description'],
+            action=form_data['action'],
+            protocol=form_data['protocol'],
+            source_ip=form_data['source_ip'],
+            destination_ip=form_data['destination_ip'],
+            source_port=form_data['source_port'],
+            destination_port=form_data['destination_port'],
+            # ... diğer alanlar
+        )
+        new_rule.save()
+        
+        # Yeni kuralı sistemin güvenlik duvarına uygulayın (iptables, ufw vb.)
+        # ... (örneğin, subprocess.run() ile komut çalıştırın)
+
+        return redirect('firewall_monitor')
+    return render(request, 'add_rule.html')
+
+def edit_rule(request, rule_id):
+    """Mevcut bir güvenlik duvarı kuralını düzenler."""
+    rule = get_object_or_404(FirewallRule, pk=rule_id)
+    if request.method == 'POST':
+        rule.name = request.POST['name']
+        rule.description = request.POST['description']
+        rule.action = request.POST['action']
+        rule.protocol = request.POST['protocol']
+        rule.source_ip = request.POST['source_ip']
+        rule.destination_ip = request.POST['destination_ip']
+        rule.source_port = request.POST['source_port']
+        rule.destination_port = request.POST['destination_port']
+        rule.save()
+        
+        # Güncellenmiş kuralı güvenlik duvarına uygulayın
+        # ...
+
+        return redirect('firewall_monitor')
+    return render(request, 'edit_rule.html', {'rule': rule})
+
+def delete_rule(request, rule_id):
+    """Bir güvenlik duvarı kuralını siler."""
+    rule = get_object_or_404(FirewallRule, pk=rule_id)
+    rule.delete()
+    
+    # Kuralı güvenlik duvarından kaldırın
+    # ...
+
+    return redirect('firewall_monitor')

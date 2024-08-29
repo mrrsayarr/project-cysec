@@ -46,8 +46,14 @@ urlpatterns = [
     
     path('search/', views.search, name='search'), # Search Page
 
-    # ARP Scanner
+    # ARP Monitor
     path('arp-scanner/', views.arp_scanner, name='arp_scanner'),
     path('arp_monitor/', views.arp_monitor, name='arp_monitor'),
 
+    # Firewall Monitor
+    path('firewall_monitor/', views.firewall_monitor, name='firewall_monitor'),
+    path('get-firewall-logs/', views.get_firewall_logs, name='get_firewall_logs'),
+    path('add-rule/', views.add_rule, name='add_rule'),
+    path('edit-rule/<int:rule_id>/', views.edit_rule, name='edit_rule'),
+    path('delete-rule/<int:rule_id>/', views.delete_rule, name='delete_rule'),
 ]

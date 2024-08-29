@@ -101,3 +101,32 @@ class WatchPaths(models.Model):
 
     def __str__(self):
         return f"{self.path}"
+
+class FirewallRule(models.Model):
+    """Güvenlik duvarı kuralını temsil eden model."""
+    ACTION_CHOICES = (
+        ('ALLOW', 'İzin Ver'),
+        ('DROP', 'Engelle'),
+    )
+    PROTOCOL_CHOICES = (
+        ('TCP', 'TCP'),
+        ('UDP', 'UDP'),
+        ('ICMP', 'ICMP'),
+    )
+
+    class Meta:
+        managed = True
+        db_table = 'firewallrule'
+
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True)
+    action = models.CharField(max_length=5, choices=ACTION_CHOICES, default='DROP')
+    protocol = models.CharField(max_length=5, choices=PROTOCOL_CHOICES, default='TCP')
+    source_ip = models.CharField(max_length=45, blank=True)  # IPv4 veya IPv6
+    destination_ip = models.CharField(max_length=45, blank=True)  # IPv4 veya IPv6
+    source_port = models.CharField(max_length=5, blank=True) 
+    destination_port = models.CharField(max_length=5, blank=True) 
+    enabled = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return self.name
