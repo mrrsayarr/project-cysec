@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}
+Search on Google
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid pt-4 px-4">
+    <h1 class="text-start">Google Dork Search</h1>
+    <div class="form-group mt-2">
+        <label for="inputText">Search Text:</label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-search fs-4"></i></span>
+            <input type="text" class="form-control border-color mt-1" id="inputText"
+                placeholder="Enter search text here...">
+        </div>
+    </div>
+    <div class="form-group mt-2">
+        <label for="fileType">File Type:</label>
+        <select class="form-control  mt-1" id="fileType">
+            <option value="">Select File Type</option>
+            <option value="pdf">PDF (pdf)</option>
+            <option value="ppt">PowerPoint (ppt)</option>
+            <option value="pptx">PowerPoint (pptx)</option>
+            <option value="doc">Word (doc)</option>
+            <option value="docx">Word (docx)</option>
+            <option value="xls">Excel (xls)</option>
+            <option value="xlsx">Excel (xlsx)</option>
+            <option value="txt">TXT (txt)</option>
+        </select>
+    </div>
+    <div class="form-group mt-2">
+        <label for="site">Site:</label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-globe fs-4"></i></span>
+            <input type="text" class="form-control border-color mt-1" id="site" placeholder="example.com">
+        </div>
+    </div>
+    <div class="form-group mt-2">
+        <label for="intitle">In Title:</label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-card-heading fs-4"></i></span>
+            <input type="text" class="form-control border-color mt-1" id="intitle" placeholder="Keywords in title">
+        </div>
+    </div>
+    <div class="form-group mt-2">
+        <label for="inurl">In URL:</label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-link-45deg fs-4"></i></span>
+            <input type="text" class="form-control border-color mt-1" id="inurl" placeholder="Keywords in URL">
+        </div>
+    </div>
+    <button onclick="performSearch()" class="btn btn-primary btn-block mt-2">Start Search</button>
+
+    <div class="mt-4" id="resultDiv"></div>
+</div>
+
+<script>
+    function performSearch() {
+        const text = document.getElementById('inputText').value.trim();
+        const fileType = document.getElementById('fileType').value;
+        const site = document.getElementById('site').value.trim();
+        const intitle = document.getElementById('intitle').value.trim();
+        const inurl = document.getElementById('inurl').value.trim();
+        const resultDiv = document.getElementById('resultDiv');
+
+        resultDiv.innerHTML = '';
+
+        if (text) {
+            let searchQuery = `"${text}"`;
+
+            if (fileType) {
+                searchQuery += ` filetype:${fileType}`;
+            }
+            if (site) {
+                searchQuery += ` site:${site}`;
+            }
+            if (intitle) {
+                searchQuery += ` intitle:${intitle}`;
+            }
+            if (inurl) {
+                searchQuery += ` inurl:${inurl}`;
+            }
+
+            const googleSearchLink = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
+
+            const searchResult = document.createElement('div');
+            searchResult.classList.add('alert', 'alert-success');
+            searchResult.innerHTML = `
+                <p>Google Dork Query: <strong>${searchQuery}</strong></p>
+                <p>Search Link: <a href="${googleSearchLink}" target="_blank" class="alert-link">Open in Google</a></p>
+            `;
+            resultDiv.appendChild(searchResult);
+        } else {
+            resultDiv.innerHTML = '<div class="alert alert-danger">Please enter a search text.</div>';
+        }
+    }
+</script>
+
+{% endblock %}

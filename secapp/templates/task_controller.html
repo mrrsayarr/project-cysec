@@ -111,6 +111,7 @@ Task Manager
                     $('#processModalBody').html(`
                         <p>PID: ${process.pid}</p>
                         <p>Name: ${process.name}</p>
+                        <p>Username: ${process.username}</p> <!-- Add this line -->
                         <p>CPU: ${process.cpu_percent.toFixed(2)}</p>
                         <p>Memory: ${process.memory_percent.toFixed(2)}</p>
                         <p>Command Line: ${process.cmdline}</p>

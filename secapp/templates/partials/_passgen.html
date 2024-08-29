@@ -1,0 +1,94 @@
+<div class="card m-2">
+    <div class="card-header">
+        PassGen
+    </div>
+    <div class="card-body">
+        <!-- IPController.py control form -->
+        <div class="row mt-4">
+            <div class="col-md-6 offset-md-3">
+                <input type="number" id="length" class="form-control" placeholder="Password Length (Max 99)" min="1"
+                    max="99" value="18">
+                <div class="form-check mt-2">
+                    <input class="form-check-input" type="checkbox" value="" id="uppercase" checked>
+                    <label class="form-check-label" for="uppercase">Include Uppercase Letters</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="numbers" checked>
+                    <label class="form-check-label" for="numbers">Include Numbers</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="symbols" checked>
+                    <label class="form-check-label" for="symbols">Include Symbols</label>
+                </div>
+                <button class="btn btn-primary mt-3" id="generate">Generate Password</button>
+
+                <!-- Password input -->
+                <input type="text" id="password" class="form-control mt-3" readonly onclick="copyPassword()">
+
+                <!-- Toast notification -->
+                <div class="toast" id="copyToast" style="position: absolute; top: 0; right: 0;" data-delay="2000">
+                    <div class="toast-header">
+                        <strong class="mr-auto">Password Generator</strong>
+                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="toast-body">
+                        Password copied to clipboard.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const lowerCaseLetters = 'abcdefghijklmnopqrstuvwxyz';
+    const upperCaseLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const numbers = '0123456789';
+    const symbols = '!@#$%^&*()_+~`|}{[]\:;?><,./-=';
+
+    document.getElementById('generate').addEventListener('click', function () {
+        let characters = lowerCaseLetters;
+        let passwordLength = document.getElementById('length').value;
+        let password = '';
+
+        if (document.getElementById('uppercase').checked) {
+            characters += upperCaseLetters;
+        }
+
+        if (document.getElementById('numbers').checked) {
+            characters += numbers;
+        }
+
+        if (document.getElementById('symbols').checked) {
+            characters += symbols;
+        }
+
+        for (let i = 0; i < passwordLength; i++) {
+            password += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+
+        document.getElementById('password').value = password;
+    });
+
+    function copyPassword() {
+        /* Get the text field */
+        var copyText = document.getElementById("password");
+
+        /* Select the text field */
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+        /* Copy the text inside the text field */
+        document.execCommand("copy");
+
+        /* Show toast notification */
+        $('#copyToast').toast('show');
+    }
+
+    // Initialize toast
+    $(document).ready(function () {
+        $('.toast').toast();
+    });
+</script>

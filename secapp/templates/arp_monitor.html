@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}
+ARP Monitor
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid pt-4 px-4">
+    <h2>ARP Table</h2>
+    <div id="arp-table-container" class="table-responsive">
+        <table class="table table-dark table-striped">
+            <thead>
+                <tr>
+                    <th>IP Address</th>
+                    <th>MAC Address</th>
+                </tr>
+            </thead>
+            <tbody id="arpTableBody">
+            </tbody>
+        </table>
+    </div>
+
+    <div id="alert-container" class="alert alert-danger mt-3" style="display: none;">
+        <strong>Warning!</strong> Multiple MAC addresses detected for the same IP address!
+    </div>
+
+    <div id="no-problem-alert" class="alert alert-success mt-3" style="display: none;">
+        <strong>Success!</strong> No issues detected!
+    </div>
+</div>
+
+<script>
+    function updateArpTable() {
+        fetch('{% url "arp_scanner" %}')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('Error:', data.error);
+                    return;
+                }
+                const arpTable = data.arp_table;
+                const tableBody = document.getElementById('arpTableBody');
+                tableBody.innerHTML = '';
+                let ipAddresses = {}; // To store IP addresses and MAC addresses
+
+                arpTable.forEach(entry => {
+                    if (ipAddresses[entry.ip] && ipAddresses[entry.ip] !== entry.mac) {
+                        document.getElementById('alert-container').style.display = 'block'; // Show warning
+                    } else {
+                        ipAddresses[entry.ip] = entry.mac; // Save IP address and MAC
+                    }
+
+                    let row = tableBody.insertRow();
+                    let ipCell = row.insertCell();
+                    let macCell = row.insertCell();
+                    ipCell.textContent = entry.ip;
+                    macCell.textContent = entry.mac;
+                });
+
+                if (tableBody.rows.length === 0) {
+                    document.getElementById('no-problem-alert').style.display = 'block'; // Show success alert
+                }
+            });
+    }
+
+    $(document).ready(function () {
+        updateArpTable();
+        setInterval(updateArpTable, 5000); // Update the table every 5 seconds
+    });
+</script>
+
+{% endblock %}

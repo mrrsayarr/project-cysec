@@ -29,7 +29,13 @@ IP Logs
                 <td>{{ iplog.Process }}</td>
                 <td>{{ iplog.LocalIp }}</td>
                 <td>{{ iplog.LocalPort }}</td>
-                <td>{{ iplog.RemoteIp }}</td>
+                <td>
+                    <!-- Add blinking dot if Remote IP is different from Local IP -->
+                    {% if iplog.RemoteIp != iplog.LocalIp %}
+                    <div class="blinking-dot"></div>
+                    {% endif %}
+                    {{ iplog.RemoteIp }}
+                </td>
                 <td>{{ iplog.RemotePort }}</td>
                 <td>
                     <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
@@ -45,7 +51,8 @@ IP Logs
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title text-dark" id="processModalLabel{{ iplog.PID }}">Process Information for PID {{ iplog.PID }}</h5>
+                            <h5 class="modal-title text-dark" id="processModalLabel{{ iplog.PID }}">Process Information
+                                for PID {{ iplog.PID }}</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body" style="word-wrap: break-word;">
@@ -60,6 +67,7 @@ IP Logs
                             <p><strong>Communication Protocol:</strong> {{ iplog.CommunicationProtocol }}</p>
                         </div>
                         <div class="modal-footer">
+                            <!-- <input type="text" id="inputText" class="form-control w-%100" placeholder="Enter text"> -->
                             <button type="button" class="btn btn-primary btn-sm"
                                 onclick="copyToClipboard('{{ iplog.RemoteIp }}')">
                                 <i class="bi bi-clipboard">Copy Remote IP</i>
@@ -105,13 +113,40 @@ IP Logs
 </style>
 
 <script>
-    function copyToClipboard(text) {
-        navigator.clipboard.writeText(text).then(function() {
-            console.log('Copying to clipboard was successful!');
-        }, function(err) {
-            console.error('Could not copy text: ', err);
-        });
+    function updateTable() {
+        const url = '/get_ip_logs';
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector('.table tbody');
+                // Clear the table
+                tableBody.innerHTML = '';
+                // Add new rows
+                data.forEach(iplog => {
+                    let blinkingDot = '';
+                    if (iplog.RemoteIp !== iplog.LocalIp) {
+                        blinkingDot = '<div class="blinking-dot"></div>';
+                    }
+                    const row = tableBody.insertRow(-1);
+                    row.innerHTML = `
+                        <td>${iplog.PID}</td>
+                        <td>${iplog.Process}</td>
+                        <td>${iplog.LocalIp}</td>
+                        <td>${iplog.LocalPort}</td>
+                        <td>${blinkingDot} ${iplog.RemoteIp}</td>
+                        <td>${iplog.RemotePort}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#processModal${iplog.PID}">
+                                Details
+                            </button>
+                        </td>`;
+                });
+            });
     }
+    
+    // Call updateTable every second
+    setInterval(updateTable, 1000);
 </script>
 
 {% endblock %}
