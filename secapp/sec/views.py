@@ -43,9 +43,19 @@ def get_event_logs(request):
     logs_list = list(logs)
     return JsonResponse(logs_list, safe=False)
 
+def get_ip_logs(request):
+    iplogs = Iplogs.objects.all().values(
+        'ID', 'PID', 'Process', 'Local', 'Remote', 'Protocol', 'StartTime', 'CommunicationProtocol', 'LocalIp', 'LocalPort', 'RemoteIp', 'RemotePort'
+    )
+    iplogs_list = list(iplogs)
+    return JsonResponse(iplogs_list, safe=False)
+
 def news(request):
     news_items = News.objects.all()  # Get all news items
     return render(request, 'news.html', {'news_items': news_items})
+
+def search(request):
+    return render(request, 'search.html')
 
 # IPLogs table is used in this script
 import ipaddress
@@ -271,12 +281,19 @@ def get_processes(request):
             else:
                 cmdline = '' # Eğer cmdline bilgisi yoksa, boş string ata
 
+            # Yayımcıyı al
+            try:
+                username = proc.username()
+            except psutil.AccessDenied:
+                username = "Access Denied"
+
             processes.append({
                 'pid': proc.info['pid'],
                 'name': proc.info['name'],
                 'cpu_percent': proc.info['cpu_percent'],
                 'memory_percent': proc.info['memory_percent'],
-                'cmdline': cmdline 
+                'cmdline': cmdline,
+                'username': username  # Yayımcıyı ekle
             })
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
@@ -297,3 +314,27 @@ def kill_process(request):
     return JsonResponse({'status': 'error', 'message': 'Invalid request.'})
 
 #####################################################################################
+# ARP Scanner
+def arp_scanner(request):
+    """ARP tablosunu tarar ve sonuçları JSON olarak döndürür."""
+    try:
+        arp_table = subprocess.check_output(['arp', '-a']).decode('utf-8').split('\n')
+        arp_entries = []
+        for entry in arp_table:
+            if 'Interface' in entry:
+                continue
+            parts = entry.split()
+            if len(parts) >= 3:
+                ip_address = parts[0]
+                mac_address = parts[1].replace('-', ':')  # MAC adres formatını düzelt
+                arp_entries.append({'ip': ip_address, 'mac': mac_address})
+        return JsonResponse({'arp_table': arp_entries})
+    except Exception as e:
+        return JsonResponse({'error': str(e)})
+
+def arp_monitor(request):
+    """ARP izleme arayüzünü görüntüler."""
+    return render(request, 'arp_monitor.html')
+
+#####################################################################################
+ 

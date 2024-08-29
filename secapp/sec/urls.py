@@ -33,6 +33,7 @@ urlpatterns = [
     path('clear_logs', views.clear_logs, name='clear_logs'), # Clear Logs
     path('get_file_logs', views.get_file_logs, name='get_file_logs'), # Get Logs for file watchers
     path('get-event-logs/', views.get_event_logs),  # Get Logs for eventlogs
+    path('get_ip_logs/', get_ip_logs, name='get_ip_logs'), # Get Logs for IPlogs
     
     # Port Scanner
     path('port_scanner/', views.port_scanner, name='port_scanner'),
@@ -43,4 +44,10 @@ urlpatterns = [
     path('get-processes/', views.get_processes, name='get_processes'),
     path('kill-process/', views.kill_process, name='kill_process'),
     
+    path('search/', views.search, name='search'), # Search Page
+
+    # ARP Scanner
+    path('arp-scanner/', views.arp_scanner, name='arp_scanner'),
+    path('arp_monitor/', views.arp_monitor, name='arp_monitor'),
+
 ]

@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 API anahtarınızı buradan al:
 6e62fe2735f94fc5b75577dab9853d73
 """
-api_key = "----------------"  # News API
+api_key = "6e62fe2735f94fc5b75577dab9853d73"  # News API
 
 
 def get_cybersecurity_news(from_date=None, to_date=None, sources=None):
