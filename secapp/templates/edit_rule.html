@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit Firewall Rule
+{% endblock %}
+
+{% block content %}
+<div class="container pt-4 px-4">
+    <h1>Edit Firewall Rule</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ rule.name }}" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea class="form-control" id="description" name="description">{{ rule.description }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="action">Action:</label>
+            <select class="form-control" id="action" name="action">
+                <option value="ALLOW" {% if rule.action == 'ALLOW' %}selected{% endif %}>Allow</option>
+                <option value="DROP" {% if rule.action == 'DROP' %}selected{% endif %}>Drop</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="protocol">Protocol:</label>
+            <select class="form-control" id="protocol" name="protocol">
+                <option value="TCP" {% if rule.protocol == 'TCP' %}selected{% endif %}>TCP</option>
+                <option value="UDP" {% if rule.protocol == 'UDP' %}selected{% endif %}>UDP</option>
+                <option value="ICMP" {% if rule.protocol == 'ICMP' %}selected{% endif %}>ICMP</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="source_ip">Source IP:</label>
+            <input type="text" class="form-control" id="source_ip" name="source_ip" value="{{ rule.source_ip }}">
+        </div>
+        <div class="form-group">
+            <label for="destination_ip">Destination IP:</label>
+            <input type="text" class="form-control" id="destination_ip" name="destination_ip" value="{{ rule.destination_ip }}">
+        </div>
+        <div class="form-group">
+            <label for="source_port">Source Port:</label>
+            <input type="text" class="form-control" id="source_port" name="source_port" value="{{ rule.source_port }}">
+        </div>
+        <div class="form-group">
+            <label for="destination_port">Destination Port:</label>
+            <input type="text" class="form-control" id="destination_port" name="destination_port" value="{{ rule.destination_port }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+</div>
+{% endblock %}
