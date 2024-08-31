@@ -287,14 +287,16 @@ def get_processes(request):
             except psutil.AccessDenied:
                 username = "Access Denied"
 
-            processes.append({
-                'pid': proc.info['pid'],
-                'name': proc.info['name'],
-                'cpu_percent': proc.info['cpu_percent'],
-                'memory_percent': proc.info['memory_percent'],
-                'cmdline': cmdline,
-                'username': username  # Yayımcıyı ekle
-            })
+            # NT AUTHORITY\SYSTEM kullanıcısına ait işlemleri filtrele
+            if username != 'NT AUTHORITY\\SYSTEM':
+                processes.append({
+                    'pid': proc.info['pid'],
+                    'name': proc.info['name'],
+                    'cpu_percent': proc.info['cpu_percent'],
+                    'memory_percent': proc.info['memory_percent'],
+                    'cmdline': cmdline,
+                    'username': username  # Yayımcıyı ekle
+                })
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
     return JsonResponse({'processes': processes})
@@ -338,7 +340,6 @@ def arp_monitor(request):
 
 #####################################################################################
 # Firewall Monitor
-import subprocess
 from django.shortcuts import redirect, get_object_or_404
 from .models import FirewallRule
 # from .models import Rule
@@ -366,10 +367,16 @@ def add_rule(request):
     """Yeni bir güvenlik duvarı kuralı ekler."""
     if request.method == 'POST':
         form_data = request.POST  
+        rule_name = form_data['name']
+
+        # Kural adının zaten kullanılıp kullanılmadığını kontrol edin
+        if FirewallRule.objects.filter(name=rule_name).exists():
+            # Hata mesajını kullanıcıya gösterin
+            return render(request, 'add_rule.html', {'error': 'This rule name is already in use.'})
+
         # Form verilerini doğrulayın ve yeni FirewallRule nesnesi oluşturun
-        # ...
         new_rule = FirewallRule(
-            name=form_data['name'],
+            name=rule_name,
             description=form_data['description'],
             action=form_data['action'],
             protocol=form_data['protocol'],
@@ -385,7 +392,8 @@ def add_rule(request):
         # ... (örneğin, subprocess.run() ile komut çalıştırın)
 
         return redirect('firewall_monitor')
-    return render(request, 'add_rule.html')
+    else:
+        return render(request, 'add_rule.html')
 
 def edit_rule(request, rule_id):
     """Mevcut bir güvenlik duvarı kuralını düzenler."""
