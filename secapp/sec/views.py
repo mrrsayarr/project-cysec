@@ -50,8 +50,14 @@ def get_ip_logs(request):
     iplogs_list = list(iplogs)
     return JsonResponse(iplogs_list, safe=False)
 
+from django.db.models import Q
+
 def news(request):
-    news_items = News.objects.all()  # Get all news items
+    query = request.GET.get('q')
+    if query:
+        news_items = News.objects.filter(Q(title__icontains=query) | Q(sourcename__icontains=query))
+    else:
+        news_items = News.objects.all()
     return render(request, 'news.html', {'news_items': news_items})
 
 def search(request):
@@ -302,17 +308,21 @@ def get_processes(request):
     return JsonResponse({'processes': processes})
 
 def kill_process(request):
-    """Gelen istekteki işlem ID'sine göre işlemi sonlandırır."""
+    """Gelen istekteki işlem adına göre tüm işlemleri sonlandırır."""
     if request.method == 'POST':
-        pid = int(request.POST.get('pid', 0))
-        try:
-            process = psutil.Process(pid)
-            process.kill()
-            return JsonResponse({'status': 'success', 'message': f'Process {pid} killed successfully.'})
-        except psutil.NoSuchProcess:
-            return JsonResponse({'status': 'error', 'message': f'Process {pid} not found.'})
-        except psutil.AccessDenied:
-            return JsonResponse({'status': 'error', 'message': f'Access denied to kill process {pid}.'})
+        process_name = request.POST.get('name', '')
+        killed_processes = []
+        for proc in psutil.process_iter(['pid', 'name']):
+            if proc.info['name'] == process_name:
+                try:
+                    proc.kill()
+                    killed_processes.append(proc.info['pid'])
+                except (psutil.NoSuchProcess, psutil.AccessDenied):
+                    continue
+        if killed_processes:
+            return JsonResponse({'status': 'success', 'message': f'Processes with name {process_name} killed successfully. PIDs: {killed_processes}'})
+        else:
+            return JsonResponse({'status': 'error', 'message': f'No processes found with name {process_name}.'})
     return JsonResponse({'status': 'error', 'message': 'Invalid request.'})
 
 #####################################################################################
