@@ -7,6 +7,10 @@ ARP Monitor
 {% block content %}
 
 <div class="container-fluid pt-4 px-4">
+    <div class="alert alert-info mt-3 ">
+        <p>This page displays the IP and MAC addresses of devices on your network. The 'arp_scanner' function scans the
+            ARP table and returns the results as JSON. Each entry contains an IP address and a MAC address.</p>
+    </div>
     <h2>ARP Table</h2>
     <div id="arp-table-container" class="table-responsive">
         <table class="table table-dark table-striped">
@@ -25,7 +29,7 @@ ARP Monitor
         <strong>Warning!</strong> Multiple MAC addresses detected for the same IP address!
     </div>
 
-    <div id="no-problem-alert" class="alert alert-success mt-3" style="display: none;">
+    <div id="no-problem-alert" class="alert alert-success mt-3">
         <strong>Success!</strong> No issues detected!
     </div>
 </div>

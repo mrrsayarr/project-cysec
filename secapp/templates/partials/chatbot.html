@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Functional Chatbot</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+
+    <!-- Avatar -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .chat-message {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .user-message {
+            justify-content: flex-start;
+        }
+
+        .bot-message {
+            justify-content: flex-end;
+        }
+
+        .chat-bubble {
+            background-color: #eee;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+
+        .chat-bubble-primary {
+            background-color: rgb(233, 232, 232);
+            color: black;
+        }
+
+        .chat-bubble-secondary {
+            background-color: #54c745;
+            color: black;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 0, 0, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+
+        .join {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1;
+            width: auto;
+            height: 60px;
+            /* .join elementinin yüksekliğini ayarlar */
+        }
+
+        .chat-container {
+            height: calc(80vh - 60px);
+            /* .join elementinin yüksekliğine bağlı olarak ayarlanmalıdır */
+            overflow-y: auto;
+        }
+
+        /* Özel Scrollbar */
+        .chat-container::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .chat-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1;
+        }
+
+        .avatar {
+            font-size: 2rem;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold mb-4">Multi-Functional Chatbot</h1>
+        <input type="text" v-model="systemMessage" placeholder="Enter system message..."
+            class="input input-bordered w-full mb-4">
+        <div class="chat-container mb-4" style="overflow-y: auto;">
+            <!-- Mesajları göstermek için döngü -->
+            <div v-for="(message, index) in messages" :key="index" class="chat-message"
+                :class="{ 'user-message': message.role === 'user', 'bot-message': message.role === 'assistant' }"
+                v-show="message.show">
+                <!-- Mesajın yanında bir resim göstermek için img etiketi yerine Bootstrap ikonu kullanılmıştır -->
+                <i :class="message.role === 'user' ? 'bi bi-person-fill' : 'bi bi-robot'" class="avatar"></i>
+                <div
+                    :class="['chat-bubble', message.role === 'user' ? 'chat-bubble-primary' : 'chat-bubble-secondary']">
+                    <div v-if="message.role === 'assistant'" class="loading" v-show="message.loading">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <p v-html="message.content"></p>
+                </div>
+            </div>
+        </div>
+        <footer class="w-full text-white text-center p-4 mt-4">
+            <div class="join w-full">
+                <input type="text" v-model="inputMessage" @keyup.enter="sendMessage" placeholder="Type a message..."
+                    class="input input-bordered join-item w-full">
+                <button @click="sendMessage" class="btn join-item">Send</button>
+            </div>
+        </footer>
+    </div>
+
+
+    <script type="module">
+        new Vue({
+            el: '#app',
+            data: {
+                inputMessage: '',
+                systemMessage: 'You are a cybersecurity expert, proficient in all aspects of digital security.',
+                messages: []
+            },
+            methods: {
+                async sendMessage() {
+                    if (this.inputMessage.trim() !== '') {
+                        let userContent = this.inputMessage;
+                        if (this.messages.length === 0 && this.systemMessage.trim() !== '') {
+                            userContent = `You are ${this.systemMessage};\n\n${userContent}`;
+                        }
+                        const userMessage = { role: "user", content: userContent, show: true };
+                        this.inputMessage = '';
+                        this.messages.push(userMessage);
+
+                        const lastMessage = this.messages[this.messages.length - 1];
+                        lastMessage.loading = true;
+                        const data = await generateText(this.messages);
+                        lastMessage.loading = false;
+                        this.messages.push({ role: "assistant", content: processMarkdown(data), show: true });
+                    }
+                },
+            }
+        });
+
+        function processMarkdown(text) {
+            // Başlıklar
+            text = text.replace(/###\s+(.*)/g, '<h3>$1</h3>');
+            text = text.replace(/##\s+(.*)/g, '<h2>$1</h2>');
+            text = text.replace(/#\s+(.*)/g, '<h1>$1</h1>');
+
+            // Kalın ve İtalik
+            text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+            // Listeler
+            text = text.replace(/-\s+(.*)/g, '<ul><li>$1</li></ul>'); // Unordered list
+            text = text.replace(/\d+\.\s+(.*)/g, '<ol><li>$1</li></ol>'); // Ordered list
+
+            // Bağlantılar
+            text = text.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>');
+
+            // Kod Blokları (Geliştirilmiş)
+            text = text.replace(/```([\s\S]*?)```/g, function (match, code) {
+                // HTML kaçış karakterlerini encode edin
+                code = code.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>');
+                return `<pre class="bg-gray-800 p-2 rounded text-white"><code>${code}</code></pre>`;
+            });
+
+            text = text.replace(/`(.*?)`/g, '<code>$1</code>');
+
+            // Yatay Çizgiler
+            text = text.replace(/---/g, '<hr>');
+
+            // Alıntı
+            text = text.replace(/>\s+(.*)/g, '<blockquote>$1</blockquote>');
+
+            // Görev Listesi
+            text = text.replace(/- \[(x| )\]\s+(.*)/g, '<input type="checkbox" ' +
+                'disabled ' +
+                '$1 checked' +
+                '> $2</input>');
+            return text;
+        }
+
+
+        async function generateText(messages) {
+            const response = await fetch('https://api.gptcall.net/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // API KEY BURDAN DEĞİŞİR.
+                    'Authorization': 'rp-C8MIMKlrjIKFUlGJFdMq7aBR6Z47i4ZCP7o1wP1vyL9QGSp3'
+                },
+                body: JSON.stringify({
+                    model: "gpt-3.5-turbo",
+                    messages: messages,
+                    max_tokens: 500,
+                    temperature: 1.0,
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`API request failed with status ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data.choices[0].message.content;
+        }
+    </script>
+</body>
+</html>
