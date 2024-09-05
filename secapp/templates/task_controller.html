@@ -46,6 +46,7 @@ Task Manager
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-beta1/js/bootstrap.min.js"></script>
+{% csrf_token %}
 <script>
     function searchFunction() {
         let input, filter, table, tr, td, i, txtValue;
@@ -116,7 +117,7 @@ Task Manager
                         <p>Memory: ${process.memory_percent.toFixed(2)}</p>
                         <p>Command Line: ${process.cmdline}</p>
                     `);
-                    $('#killProcessButton').data('pid', process.pid);
+                    $('#killProcessButton').data('pid', process.pid); // This line may cause an error
                     $('#processModal').modal('show');
                 });
 
@@ -128,7 +129,11 @@ Task Manager
                         $.ajax({
                             url: '{% url "kill_process" %}',
                             type: 'POST',
-                            data: { pid: pid, csrfmiddlewaretoken: '{{ csrf_token }}' },
+                            data: { 
+                                pid: pid, 
+                                name: name, // Add this line
+                                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val() 
+                            },
                             success: function (response) {
                                 if (response.status === 'success') {
                                     alert(response.message);

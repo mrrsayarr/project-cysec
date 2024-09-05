@@ -25,122 +25,71 @@ Event Logs
                     </tr>
                 </thead>
                 <tbody id="eventTableBody">
+                    {% for event in event_logs %}
+                    <tr>
+                        <td>{{ event.EventID }}</td>
+                        <td>{{ event.SourceName }}</td>
+                        <td>{{ event.Level }}</td>
+                        <td>{{ event.Channel }}</td>
+                        <td>{{ event.PredictedValue }}
+                            <span class="badge {% if event.PredictedValue == 0 %}bg-success{% elif event.PredictedValue >= 1 and event.PredictedValue <= 3 %}bg-warning{% elif event.PredictedValue >= 4 and event.PredictedValue <= 5 %}bg-danger{% endif %}">
+                                {% if event.PredictedValue == 0 %}Safe{% elif event.PredictedValue >= 1 and event.PredictedValue <= 3 %}Warning{% elif event.PredictedValue >= 4 and event.PredictedValue <= 5 %}Danger{% endif %}
+                            </span>
+                        </td>
+                        <td>{{ event.TimeGenerated }}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" 
+                                    data-bs-target="#eventModal{{ event.EventID }}" data-eventid="{{ event.EventID }}" data-predictedvalue="{{ event.PredictedValue }}">
+                                Details
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- Modal for each event -->
+                    <div class="modal fade" id="eventModal{{ event.EventID }}" tabindex="-1" aria-labelledby="eventModalLabel{{ event.EventID }}" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content bg-white">
+                                <div class="modal-header">
+                                    <h5 class="modal-title text-dark" id="eventModalLabel{{ event.EventID }}">Event Details (ID: {{ event.EventID }})</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-dark">
+                                    <p><strong>Event ID:</strong> {{ event.EventID }}</p>
+                                    <p><strong>Source Name:</strong> {{ event.SourceName }}</p>
+                                    <p><strong>Predicted Value:</strong> <span id="predictedValue{{ event.EventID }}"></span></p>
+                                    <p><strong>Level:</strong> {{ event.Level }}</p>
+                                    <p><strong>Channel:</strong> {{ event.Channel }}</p>
+                                    <p><strong>Time Generated:</strong> {{ event.TimeGenerated }}</p>
+                                    <p style="word-wrap: break-word;"><strong>Description:</strong> {{ event.description }}</p>
+                                    <p style="word-wrap: break-word;"><strong>Message:</strong> {{ event.Message }}</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal End -->
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 
-<!-- Modal Structure -->
-<div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title text-dark" id="eventModalLabel">Event Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <pre id="eventDetails"></pre>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Include Bootstrap JS and jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    $(document).ready(function () {
-        // Function to show event details in modal
-        function showEventDetails(event) {
-            let details = "";
-            for (let key in event) {
-                details += `${key}: ${event[key]}\n`;
-            }
-            $('#eventDetails').text(details);
-            var myModal = new bootstrap.Modal(document.getElementById('eventModal'));
-            myModal.show();
-        }
+    $(document).ready(function() {
+        // Details butonlarına tıklandığında çalışacak fonksiyon
+        $('button[data-bs-toggle="modal"]').click(function() {
+            const eventId = $(this).data('eventid');
+            const predictedValue = $(this).data('predictedvalue');
 
-        // Update table with data from server
-        function updateTable() {
-            fetch('/get-event-logs/')
-                .then(response => response.json())
-                .then(data => {
-                    let tableBody = $('#eventTableBody');
-                    tableBody.empty();  // Clear the table before updating
-
-                    data.sort((a, b) => b.PredictedValue - a.PredictedValue);  // Sort by PredictedValue
-
-                    data.forEach(event => {
-                        let row = $('<tr></tr>');
-
-                        row.append($('<td></td>').text(event.EventID));
-                        row.append($('<td></td>').text(event.SourceName));
-                        row.append($('<td></td>').text(event.Level));
-                        row.append($('<td></td>').text(event.Channel));
-
-                        let badgeClass = event.PredictedValue == 0 ? 'bg-success' :
-                            (event.PredictedValue >= 1 && event.PredictedValue <= 3) ? 'bg-warning' :
-                                (event.PredictedValue >= 4 && event.PredictedValue <= 5) ? 'bg-danger' : '';
-                        let badgeText = event.PredictedValue == 0 ? 'Safe' :
-                            (event.PredictedValue >= 1 && event.PredictedValue <= 3) ? 'Warning' :
-                                (event.PredictedValue >= 4 && event.PredictedValue <= 5) ? 'Danger' : '';
-                        row.append($('<td></td>').html(`${event.PredictedValue} <span class="badge ${badgeClass}">${badgeText}</span>`));
-
-                        row.append($('<td></td>').text(event.TimeGenerated));
-
-                        let actionCell = $('<td></td>');
-                        let detailsButton = $('<button></button>')
-                            .addClass('btn btn-primary')
-                            .text('Details')
-                            .on('click', function () {
-                                showEventDetails(event);
-                            });
-                        actionCell.append(detailsButton);
-                        row.append(actionCell);
-
-                        tableBody.append(row);
-                    });
-                })
-                .catch(error => {
-                    console.error('Fetch Error:', error);
-                    alert('Verileri alırken bir hata oluştu. Lütfen tekrar deneyin.');
-                });
-        }
-
-        // Initial table update and set interval for updates
-        updateTable();
-        setInterval(updateTable, 5000);
-
-        // Fix for padding-right and body overflow issues
-        $('#eventModal').on('shown.bs.modal', function () {
-            $('body').css('padding-right', '0');
-        });
-
-        $('#eventModal').on('hidden.bs.modal', function () {
-            $('body').css('padding-right', '');
-            $('body').css('overflow', 'auto');
-            $(".modal-backdrop").remove();
+            // Predicted Value değerini modal içinde güncelle
+            $(`#predictedValue${eventId}`).text(predictedValue);
         });
     });
 </script>
-
-<!-- Optional CSS Fixes -->
-<style>
-    body.modal-open {
-        overflow-y: auto;
-        padding-right: 0 !important;
-    }
-
-    /* Ensure modal backdrop is removed properly */
-    .modal-backdrop {
-        display: none;
-    }
-</style>
 
 {% endblock %}

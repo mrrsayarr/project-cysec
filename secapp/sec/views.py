@@ -14,22 +14,14 @@ def index(request):
     return render(request, 'index.html', {'event_logs': event_logs})
 
 def eventlog(request):
-    event_logs = Events.objects.all()  # Fetch all records from EventLog table
-    return render(request, 'eventlog.html', {'event_logs': event_logs})
-
-# File Watcher Start
-# def filewatch(request):
-#     file_logs = FileLogs.objects.all()  # Get all file logs
-    
-#     if request.method == 'POST':
-#         new_path = request.POST.get('new_path')
-#         watch_path = WatchPaths.objects.first()
-#         watch_path.path = new_path
-#         watch_path.save()
-#         return redirect('filewatch')
-
-#     current_path = WatchPaths.objects.first().path
-#     return render(request, 'filewatch.html', {'file_logs': file_logs, 'current_path': current_path})
+    event_logs = Events.objects.all()
+    # Event'lere açıklamaları ekleme
+    for event in event_logs:
+        try:
+            event.description = Eventdescription.objects.get(eventid=event.EventID).description 
+        except Eventdescription.DoesNotExist:
+            event.description = "Not found description." 
+    return render(request, 'eventlog.html', {'event_logs': event_logs}) 
 
 def get_file_logs(request): # Get File logs
     logs = FileLogs.objects.all().values('event_type', 'file_path', 'timestamp')
@@ -311,6 +303,8 @@ def kill_process(request):
     """Gelen istekteki işlem adına göre tüm işlemleri sonlandırır."""
     if request.method == 'POST':
         process_name = request.POST.get('name', '')
+        if not process_name:  # process_name'in boş olup olmadığını kontrol et
+            return JsonResponse({'status': 'error', 'message': 'No process name provided.'})
         killed_processes = []
         for proc in psutil.process_iter(['pid', 'name']):
             if proc.info['name'] == process_name:
@@ -352,7 +346,6 @@ def arp_monitor(request):
 # Firewall Monitor
 from django.shortcuts import redirect, get_object_or_404
 from .models import FirewallRule
-# from .models import Rule
 
 def firewall_monitor(request):
     """Güvenlik duvarı izleme arayüzünü görüntüler."""

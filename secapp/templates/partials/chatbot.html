@@ -121,7 +121,7 @@
     <div id="app" class="container mx-auto p-4">
         <h1 class="text-3xl font-bold mb-4">Multi-Functional Chatbot</h1>
         <input type="text" v-model="systemMessage" placeholder="Enter system message..."
-            class="input input-bordered w-full mb-4">
+            class="input input-bordered w-full mb-4" readonly >
         <div class="chat-container mb-4" style="overflow-y: auto;">
             <!-- Mesajları göstermek için döngü -->
             <div v-for="(message, index) in messages" :key="index" class="chat-message"

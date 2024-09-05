@@ -21,7 +21,7 @@ Task List
 
     <h2 class="mt-4">Deleted Items</h2>
     <button id="showDeletedButton" class="btn btn-outline-primary mb-2">Show Deleted Items</button>
-    <ul class="list-group" id="deletedItemList"></ul>
+    <ul class="list-group mb-4" id="deletedItemList"></ul>
 </div>
 
 <script>
@@ -114,8 +114,8 @@ Task List
 
             // Restore butonunu güncelle
             let restoreButton = listItem.querySelector(".removeButton");
-            restoreButton.classList.remove("btn-danger");
-            restoreButton.classList.add("btn-success");
+            restoreButton.classList.remove("btn-danger", "text-right");
+            restoreButton.classList.add("btn-success"); 
             restoreButton.textContent = "Restore";
             restoreButton.addEventListener("click", () => restoreItem(item, listItem));
 

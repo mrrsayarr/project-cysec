@@ -1,48 +1,39 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block title %}
-Homepage
+  Homepage
 {% endblock %}
 
 {% block content %}
-
-<!-- Chart Start -->
-<div class="container-fluid pt-4 px-4">
+  <!-- Chart Start -->
+  <div class="container-fluid pt-4 px-4">
     <div class="row g-4">
-        <!-- Event Logs Start -->
-        <div class="container-fluid">
-            <h1>Event Logs</h1>
-            <div class="row">
-                {% for event in event_logs %}
-                <div class="col-md-4">
-                    <div class="card mb-4">
-                        <div class="card-body bg-dark" style="border-radius: 5px;">
-                            <h5 class="card-title">Event ID: {{ event.EventID }}</h5>
-                            <p class="card-text">Source Name: {{ event.SourceName }}</p>
-                            <p class="card-text">Level: {{ event.Level }}</p>
-                            <p class="card-text">Channel: {{ event.Channel }}</p>
-                            <!-- <p class="card-text">Message: {{ event.Message }}</p> -->
-                            <p class="card-text">Predicted Value: {{ event.PredictedValue }}</p>
-                            <p class="card-text">Time Generated: {{ event.TimeGenerated }}</p>
-                        </div>
-                    </div>
+      <!-- Event Logs Start -->
+      <div class="container-fluid">
+        <h1>Event Logs</h1>
+        <div class="row">
+          {% for event in event_logs %}
+            <div class="col-md-4">
+              <div class="card mb-4">
+                <div class="card-body bg-dark" style="border-radius: 5px;">
+                  <h5 class="card-title">Event ID: {{ event.EventID }}</h5>
+                  <p class="card-text">Source Name: {{ event.SourceName }}</p>
+                  <p class="card-text">Level: {{ event.Level }}</p>
+                  <p class="card-text">Channel: {{ event.Channel }}</p>
+                  <p class="card-text">Predicted Value: {{ event.PredictedValue }}</p>
+                  <p class="card-text">Time Generated: {{ event.TimeGenerated }}</p>
                 </div>
-                {% empty %}
-                <div class="col">
-                    <p>No event logs found.</p>
-                </div>
-                {% endfor %}
+              </div>
             </div>
+          {% empty %}
+            <div class="col">
+              <p>No event logs found.</p>
+            </div>
+          {% endfor %}
         </div>
-        <!-- Event Logs End -->
-
-        <!-- Event Logs Start -->
-        <div class="container-fluid">
-            
-        </div>
-        <!-- Event Logs End -->
+      </div>
+      <!-- Event Logs End -->
     </div>
-</div>
-<!-- Chart End -->
-
+  </div>
+  <!-- Chart End -->
 {% endblock %}
