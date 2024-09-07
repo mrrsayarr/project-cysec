@@ -10,8 +10,18 @@ from .sql_views import *
 # Create your views here.
 
 def index(request):
-    event_logs = Events.objects.all()  # Fetch all records from EventLog table
-    return render(request, 'index.html', {'event_logs': event_logs})
+    event_logs = Events.objects.all()
+    descriptions = Eventdescription.objects.all()
+    
+    event_descriptions = []
+    for event in event_logs:
+        event_descriptions.append({
+            'event': event,
+            'descriptions': [desc for desc in descriptions if desc.eventid == event.EventID],
+        })
+    
+    return render(request, 'index.html', {'event_descriptions': event_descriptions})
+
 
 def eventlog(request):
     event_logs = Events.objects.all()
@@ -56,7 +66,7 @@ def search(request):
     return render(request, 'search.html')
 
 # IPLogs table is used in this script
-import ipaddress
+import ipaddress    
 
 def is_public(ip_with_port):
     ip = ip_with_port.split(":")[0]
@@ -101,6 +111,23 @@ def settings(request):
         'current_path': current_path, # POST request
     })
 
+#####################################################################################
+from django.http import StreamingHttpResponse
+from django.http import HttpResponseServerError
+
+def stream_terminal_output(request, command):
+    def event_stream():
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        for line in iter(process.stdout.readline, b''):
+            yield 'data: {0}\n\n'.format(line.decode())
+        for line in iter(process.stderr.readline, b''):
+            yield 'data: {0}\n\n'.format(line.decode())
+
+    response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
+    response['Cache-Control'] = 'no-cache'
+    return response
+
+#####################################################################################
 def todo(request):
     return render(request, 'todo.html')
 
@@ -152,7 +179,7 @@ def stop_log_collector(request):
     else:
         return JsonResponse({"status": "LogCollector script is already stopped"})
 
-#####################################################################################
+
 # File Watcher Start
 def filewatch(request):
     file_logs = FileLogs.objects.all()  # Get all file logs
@@ -193,7 +220,7 @@ def stop_watch(request):
         else:
             return JsonResponse({'message': 'No watcher to stop.', 'status': 'No watcher to stop.'})
 
-#####################################################################################
+
 # Port Scanner views
 def port_scanner(request):
     return render(request, 'port_scanner.html')
@@ -260,7 +287,7 @@ def scan_port_range(target_ip, start_port, end_port, open_ports):
             # Hata mesajlarını logla
             print(f"Port {port} taraması sırasında hata oluştu: {e}") 
 
-#####################################################################################
+
 # Task Contoller
 import psutil
 
@@ -319,7 +346,7 @@ def kill_process(request):
             return JsonResponse({'status': 'error', 'message': f'No processes found with name {process_name}.'})
     return JsonResponse({'status': 'error', 'message': 'Invalid request.'})
 
-#####################################################################################
+
 # ARP Scanner
 def arp_scanner(request):
     """ARP tablosunu tarar ve sonuçları JSON olarak döndürür."""
@@ -342,7 +369,7 @@ def arp_monitor(request):
     """ARP izleme arayüzünü görüntüler."""
     return render(request, 'arp_monitor.html')
 
-#####################################################################################
+
 # Firewall Monitor
 from django.shortcuts import redirect, get_object_or_404
 from .models import FirewallRule
@@ -391,9 +418,6 @@ def add_rule(request):
         )
         new_rule.save()
         
-        # Yeni kuralı sistemin güvenlik duvarına uygulayın (iptables, ufw vb.)
-        # ... (örneğin, subprocess.run() ile komut çalıştırın)
-
         return redirect('firewall_monitor')
     else:
         return render(request, 'add_rule.html')
@@ -412,8 +436,6 @@ def edit_rule(request, rule_id):
         rule.destination_port = request.POST['destination_port']
         rule.save()
         
-        # Güncellenmiş kuralı güvenlik duvarına uygulayın
-        # ...
 
         return redirect('firewall_monitor')
     return render(request, 'edit_rule.html', {'rule': rule})
@@ -423,7 +445,4 @@ def delete_rule(request, rule_id):
     rule = get_object_or_404(FirewallRule, pk=rule_id)
     rule.delete()
     
-    # Kuralı güvenlik duvarından kaldırın
-    # ...
-
     return redirect('firewall_monitor')

@@ -14,6 +14,9 @@ urlpatterns = [
     path('filewatch', views.filewatch, name='filewatch'),
     path('news/', views.news, name='news'),
 
+    # POST requests for Terminal Errors
+    path('stream_terminal_output/<str:command>/', views.stream_terminal_output),
+
     # POST requests for IPLogs
     path('run_script/', views.run_script, name='run_script'),
     path('stop_script/', views.stop_script, name='stop_script'),

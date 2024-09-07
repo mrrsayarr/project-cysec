@@ -10,6 +10,17 @@ from django.db import models
 
 # Create your models here.
 
+class Eventdescription(models.Model):
+    eventid = models.AutoField(primary_key=True)  # Field name made lowercase.
+    description = models.TextField(db_column='Description', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = True
+        db_table = 'eventdescription'
+
+    def __str__(self):
+        return f"{self.EventID} || {self.description}"
+        
 class Events(models.Model):
     ID = models.AutoField(primary_key=True) # Field name made lowercase.
     EventID = models.IntegerField(db_column='EventID', blank=True, null=True)  # Field name made lowercase.
@@ -56,17 +67,6 @@ class ErrorLogs(models.Model):
     class Meta:
         managed = True
         db_table = 'error_logs'
-
-class Eventdescription(models.Model):
-    eventid = models.AutoField(primary_key=True)  # Field name made lowercase.
-    description = models.TextField(db_column='Description', blank=True, null=True)  # Field name made lowercase.
-
-    class Meta:
-        managed = True
-        db_table = 'eventdescription'
-
-    def __str__(self):
-        return f"{self.EventID} || {self.description}"
 
 class FileLogs(models.Model):
     event_type = models.TextField(blank=True, null=True)
