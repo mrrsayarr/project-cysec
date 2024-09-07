@@ -12,16 +12,21 @@
       <div class="container-fluid">
         <h1>Event Logs</h1>
         <div class="row">
-          {% for event in event_logs %}
+          {% for event_desc in event_descriptions %}
             <div class="col-md-4">
               <div class="card mb-4">
                 <div class="card-body bg-dark" style="border-radius: 5px;">
-                  <h5 class="card-title">Event ID: {{ event.EventID }}</h5>
-                  <p class="card-text">Source Name: {{ event.SourceName }}</p>
-                  <p class="card-text">Level: {{ event.Level }}</p>
-                  <p class="card-text">Channel: {{ event.Channel }}</p>
-                  <p class="card-text">Predicted Value: {{ event.PredictedValue }}</p>
-                  <p class="card-text">Time Generated: {{ event.TimeGenerated }}</p>
+                  <h5 class="card-title">Event ID: {{ event_desc.event.EventID }}</h5>
+                  <p class="card-text">Source Name: {{ event_desc.event.SourceName }}</p>
+                  <p class="card-text">Level: {{ event_desc.event.Level }}</p>
+                  <p class="card-text">Channel: {{ event_desc.event.Channel }}</p>
+                  <p class="card-text">Predicted Value: {{ event_desc.event.PredictedValue }}</p>
+                  <p class="card-text">Time Generated: {{ event_desc.event.TimeGenerated }}</p>
+                  {% for description in event_desc.descriptions %}
+                    <p class="card-text text-truncate" data-toggle="tooltip" data-placement="top" title="{{ description.description }}">Description: {{ description.description }}</p>
+                  {% empty %}
+                    <p class="card-text">Description: Not found.</p>
+                  {% endfor %}
                 </div>
               </div>
             </div>
@@ -36,4 +41,10 @@
     </div>
   </div>
   <!-- Chart End -->
+
+  <script>
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
+  </script>
 {% endblock %}

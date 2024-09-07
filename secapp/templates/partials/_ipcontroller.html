@@ -4,6 +4,44 @@
     </div>
     <div class="card-body">
         <!-- IPController.py control form -->
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="watchSwitch">
+            <label class="form-check-label" for="watchSwitch">Toggle Script</label>
+        </div>
+        <script>
+            // Switch's state is changed, update colors and status
+            document.getElementById('watchSwitch').addEventListener('change', function (event) {
+                event.target.style.backgroundColor = event.target.checked ? 'green' : 'red';
+                event.target.style.borderColor = event.target.checked ? 'green' : 'red';
+                document.getElementById('script-status').value = event.target.checked ? 'Running' : 'Stopped';
+            });
+        
+            // Page is loaded, check the state of the switch
+            document.addEventListener('DOMContentLoaded', function (event) {
+                const watchSwitch = document.getElementById('watchSwitch');
+                const isRunning = localStorage.getItem('isRunning');
+        
+                // If a value has been saved before, set the switch and status according to this value
+                if (isRunning !== null) {
+                    watchSwitch.checked = (isRunning === 'true');
+                    document.getElementById('script-status').value = watchSwitch.checked ? 'Running' : 'Stopped';
+                }
+            });
+        
+            // Switch's state is changed, save this state to localStorage and call the relevant Python function
+            document.getElementById('watchSwitch').addEventListener('change', function (event) {
+                localStorage.setItem('isRunning', event.target.checked);
+        
+                // Call the relevant Python function with an AJAX request
+                fetch(event.target.checked ? '/run_script/' : '/stop_script/')
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        document.getElementById('script-status').value = data.status;
+                    });
+            });
+        </script>
+
         <button type="button" class="btn btn-primary" id="run-script-button" data-bs-toggle="button" autocomplete="off">
             Run Script <span id="run-icon"></span>
         </button>
@@ -48,5 +86,27 @@
                 document.getElementById('stop-icon').textContent = '✔'; // Add a checkmark to the icon
                 document.getElementById('run-icon').textContent = ''; // Remove the checkmark from the run script button when stop script button is pressed
             });
+    });
+
+    let isRunning = false;
+
+    document.getElementById('watchSwitch').addEventListener('change', function () {
+        if (this.checked) {
+            fetch('/run_script/')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    document.getElementById('script-status').value = data.status;
+                    isRunning = true;
+                });
+        } else {
+            fetch('/stop_script/')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    document.getElementById('script-status').value = data.status;
+                    isRunning = false;
+                });
+        }
     });
 </script>

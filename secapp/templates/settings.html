@@ -7,6 +7,18 @@ Settings
 {% block content %}
 
 <div class="container-fluid pt-4 px-4">
+
+    {% comment %} 
+    <div id="terminal" class="border"></div>
+    <script>
+        var source = new EventSource('/stream_terminal_output/');
+
+        source.onmessage = function(event) {
+            document.getElementById('terminal').innerHTML += event.data;
+        };
+    </script> 
+    {% endcomment %}
+
     <!-- IPController -->
     {% include 'partials/_ipcontroller.html' %}
 
