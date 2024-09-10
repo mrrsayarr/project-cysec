@@ -31,13 +31,12 @@ TRAINED_MODEL_PATH = os.path.join('scripts', 'trained_model.joblib')
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-nk&#+wy7l#y9fh=nx7@$=n0$_=sr)at=tae$w9x5i_7d1q)avv'
+SECRET_KEY = 'django-insecure-nk&#+wy7l#y9fh=nx7@$=n0$_=sr)at=tae$w9x5i_7d1q)avv' # Keep in Env
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['localhost', '127.0.0.1'] # ALLOWED_HOSTS = ['sunucunuzun.ip.adresi', 'www.domainadiniz.com']
 
 # Application definition
 
@@ -57,6 +56,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'sec.views.LoginRequiredMiddleware', # Custom Middleware
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
