@@ -16,8 +16,8 @@
         <div class="nav-item dropdown">
             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="far fa-user me-2"></i></a>
             <div class="dropdown-menu bg-dark border border-light rounded-3">                
-                <a href="/admin/" class="dropdown-item text-white">Sign In</a>
-                <a href="/admin/" class="dropdown-item text-white">Sign Up</a>
+                <a href="/login/" class="dropdown-item text-white">Sign In</a>
+                <a href="/admin/"    class="dropdown-item text-white">Sign Up</a>
                 <a href="/admin/" class="dropdown-item text-white">404 Error</a>
                 <a href="/admin/" class="dropdown-item text-white">Blank Page</a>
             </div>
@@ -27,6 +27,11 @@
         <a href="/settings" class="nav-item nav-link"><i class="fa fa-th me-2"></i></a> -->
         
         <a href="/todo" class="nav-item nav-link"><i class="fa fa-list me-2"></i>To Do </a>
+
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-secondary m-3" > <i class="fas fa-sign-out-alt"></i></button>
+        </form>
 
         <!-- <a href="#" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>File Watchdog</a> -->
         <!-- <a href="#" class="nav-item nav-link"><i class="fa fa-envelope me-2"></i>Virus Total</a> -->

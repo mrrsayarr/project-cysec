@@ -4,6 +4,8 @@
     </div>
     <div class="card-body">
         <!-- IPController.py control form -->
+
+        {% comment %} 
         <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" role="switch" id="watchSwitch">
             <label class="form-check-label" for="watchSwitch">Toggle Script</label>
@@ -40,7 +42,8 @@
                         document.getElementById('script-status').value = data.status;
                     });
             });
-        </script>
+        </script> 
+        {% endcomment %}
 
         <button type="button" class="btn btn-primary" id="run-script-button" data-bs-toggle="button" autocomplete="off">
             Run Script <span id="run-icon"></span>
@@ -50,11 +53,11 @@
             Stop Script <span id="stop-icon"></span>
         </button>
         <button type="button" class="btn btn-primary" onclick="location.href='{% url 'run_sql' %}';">
-            Delete IPLogs SQL Table!
+            Clear IPLogs SQL Table!
         </button>
 
         <button type="button" class="btn btn-primary" onclick="location.href='{% url 'clear_local_iplogs' %}';">
-            Delete Local IP in RemoteIP</button>
+            Delete only Local IP</button>
 
         <input type="text" id="script-status" class="form-control p-1 mt-2" value="Status here" readonly>
     </div>

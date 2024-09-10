@@ -1,6 +1,6 @@
 <div class="sidebar pe-4 pb-3" id="mySidebar">
     <nav class="navbar bg-secondary navbar-dark">
-        <a href="/" class="navbar-brand mx-4 mb-3">
+        <a href="/index/" class="navbar-brand mx-4 mb-3">
             <h3 class="text-primary"><i class="fa fa-user-secret me-2" aria-hidden="true"></i>DarkPan</h3>
         </a>
         <div class="d-flex align-items-center ms-4 mb-4">
@@ -14,41 +14,38 @@
             </div> -->
         </div>
         <div class="navbar-nav w-100">
-            <!-- <a href="/" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a> -->
-            <a href="/" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
 
-            <!-- <div class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Elements</a>
-                <div class="dropdown-menu bg-transparent border-0">
-                    <a href="button.html" class="dropdown-item">Buttons</a>
-                    <a href="typography.html" class="dropdown-item">Typography</a>
-                    <a href="element.html" class="dropdown-item">Other Elements</a>
-                </div>
-            </div> -->
-            
-            <a href="/eventlog" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Event Logs</a>
-            <a href="/iplogs" class="nav-item nav-link"><i class="fa fa-table me-2"></i>IP Logs</a>
-            <a href="/filewatch" class="nav-item nav-link"><i class="fa fa-file me-2"></i>File Watcher</a>
-            <a href="/settings" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Settings</a>
-            <a href="/news" class="nav-item nav-link"><i class="fa fa-link me-2"></i>Security News</a>
-            <a href="/port_scanner" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Port Scan</a>
-            <a href="/task-controller" class="nav-item nav-link"><i class="fa fa-tasks me-2"></i>Task Manager</a>
-            <a href="/arp_monitor" class="nav-item nav-link"><i class="fa fa-network-wired me-2"></i>ARP Monitor</a>
-            <a href="/firewall_monitor" class="nav-item nav-link"><i class="fas fa-shield-alt me-2"></i>Firewall Monitor</a>
-            <a href="/search" class="nav-item nav-link"><i class="fa fa-search me-2"></i>Search with Dork</a>
+            <a href="/index/" class="nav-item nav-link {% if request.path == '/index/' %}active{% endif %}"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+            <a href="/eventlog/" class="nav-item nav-link {% if request.path == '/eventlog/' %}active{% endif %}"><i class="fa fa-keyboard me-2"></i>Event Logs</a>
+            <a href="/iplogs/" class="nav-item nav-link {% if request.path == '/iplogs/' %}active{% endif %}"><i class="fa fa-table me-2"></i>IP Logs</a>
+            <a href="/filewatch/" class="nav-item nav-link {% if request.path == '/filewatch/' %}active{% endif %}"><i class="fa fa-file me-2"></i>File Watcher</a>
+            <a href="/settings/" class="nav-item nav-link {% if request.path == '/settings/' %}active{% endif %}"><i class="fa fa-th me-2"></i>Settings</a>
+            <a href="/news/" class="nav-item nav-link {% if request.path == '/news/' %}active{% endif %}"><i class="fa fa-link me-2"></i>Security News</a>
+            <a href="/port_scanner/" class="nav-item nav-link {% if request.path == '/port_scanner/' %}active{% endif %}"><i class="fa fa-chart-bar me-2"></i>Port Scan</a>
+            <a href="/task-controller/" class="nav-item nav-link {% if request.path == '/task-controller/' %}active{% endif %}"><i class="fa fa-tasks me-2"></i>Task Manager</a>
+            <a href="/arp_monitor" class="nav-item nav-link {% if request.path == '/arp_monitor/' %}active{% endif %}"><i class="fa fa-network-wired me-2"></i>ARP Monitor</a>
+            <a href="/firewall_monitor/" class="nav-item nav-link {% if request.path == '/firewall_monitor/' %}active{% endif %}"><i class="fas fa-shield-alt me-2"></i>Firewall Monitor</a>
+            <a href="/search/" class="nav-item nav-link {% if request.path == '/search/' %}active{% endif %}"><i class="fa fa-search me-2"></i>Search with Dork</a>
 
-            
-            <!-- <a href="#" class="nav-item nav-link"><i class="fa fa-bell me-2"></i>About DarkPan</a> -->
             <!-- <a href="/databreach" class="nav-item nav-link"><i class="fa fa-envelope me-2"></i>Data Breach</a> -->
 
-            <!-- <div class="nav-item dropdown">
+            <div class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
                         class="far fa-file-alt me-2"></i>Login</a>
                 <div class="dropdown-menu bg-transparent border-0">
                     <a href="/admin/" class="dropdown-item">Sign In</a>
                     <a href="/admin/" class="dropdown-item">Sign Up</a>
                 </div>
-            </div> -->
+            </div> 
+
+            <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Elements</a>
+                <div class="dropdown-menu bg-transparent border-0">
+                    <a href="button.html" class="dropdown-item">Buttons</a>
+                    <a href="typography.html" class="dropdown-item">Typography</a>
+                    <a href="element.html" class="dropdown-item">Other Elements</a>
+                </div>
+            </div>
         </div>
     </nav>
 </div>
