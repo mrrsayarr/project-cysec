@@ -17,9 +17,10 @@ class Eventdescription(models.Model):
     class Meta:
         managed = True
         db_table = 'eventdescription'
+        verbose_name_plural = 'Event Description' # Display name in Admin Panel
 
     def __str__(self):
-        return f"{self.EventID} || {self.description}"
+        return f"{self.eventid} - {self.description}"
         
 class Events(models.Model):
     ID = models.AutoField(primary_key=True) # Field name made lowercase.
@@ -34,9 +35,10 @@ class Events(models.Model):
     class Meta:
         managed = True
         db_table = 'events'
+        verbose_name_plural = 'Events' # Display name in Admin Panel
 
     def __str__(self):
-        return f"{self.PredictedValue} ♦ {self.EventID}"
+        return f"Predicted Value: {self.PredictedValue} - Event ID: {self.EventID}"
 
 class Iplogs(models.Model):
     ID = models.AutoField(primary_key=True)  # Field name made lowercase.
@@ -55,9 +57,10 @@ class Iplogs(models.Model):
     class Meta:
         managed = True
         db_table = 'IpLogs'
+        verbose_name_plural = 'Ip Logs' # Display name in Admin Panel
 
     def __str__(self):
-        return f"{self.Process} ♦ {self.RemoteIp}"
+        return f" {self.PID} - {self.Process} - {self.RemoteIp}"
 
 class ErrorLogs(models.Model):
     id = models.AutoField(primary_key=True)  # Field name made lowercase.
@@ -67,6 +70,7 @@ class ErrorLogs(models.Model):
     class Meta:
         managed = True
         db_table = 'error_logs'
+        verbose_name_plural = 'Error Logs'
 
 class FileLogs(models.Model):
     event_type = models.TextField(blank=True, null=True)
@@ -76,9 +80,10 @@ class FileLogs(models.Model):
     class Meta:
         managed = True
         db_table = 'file_logs'
+        verbose_name_plural = 'File Logs' # Display name in Admin Panel
 
     def __str__(self):
-        return f"{self.event_type} || {self.timestamp}"
+        return f"Action: {self.event_type} - {self.timestamp}"
 
 class News(models.Model):
     id = models.AutoField(db_column='ID', primary_key=True)  # Field name made lowercase.
@@ -90,7 +95,7 @@ class News(models.Model):
     class Meta:
         managed = True
         db_table = 'news'
-
+        verbose_name_plural = 'News' # Display name in Admin Panel
 
 class WatchPaths(models.Model):
     path = models.TextField()
@@ -98,6 +103,7 @@ class WatchPaths(models.Model):
     class Meta:
         managed = True
         db_table = 'watch_paths'
+        verbose_name_plural = 'Watch Paths' # Display name in Admin Panel
 
     def __str__(self):
         return f"{self.path}"
@@ -117,6 +123,7 @@ class FirewallRule(models.Model):
     class Meta:
         managed = True
         db_table = 'firewallrule'
+        verbose_name_plural = 'Firewall Rules' # Display name in Admin Panel
 
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)
@@ -129,4 +136,4 @@ class FirewallRule(models.Model):
     enabled = models.BooleanField(default=True)
     
     def __str__(self):
-        return self.name
+        return f"{self.action} - {self.protocol} - {self.source_ip} - {self.destination_ip} - {self.enabled}"

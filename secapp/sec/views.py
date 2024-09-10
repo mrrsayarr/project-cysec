@@ -9,6 +9,63 @@ from .sql_views import *
 
 # Create your views here.
 
+# 404 Page
+def handler404(request, exception):
+    return render(request, '404.html', status=404)
+
+# Login View
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.views import LogoutView
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse
+
+# Login View
+def login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                # Giriş başarılıysa, kullanıcıyı anasayfaya veya başka bir sayfaya yönlendirin.
+                return redirect('/index/')  
+    else:
+        form = AuthenticationForm()
+    return render(request, 'login.html', {'form': form})
+
+class LogoutViewWithGet(LogoutView):
+    def get(self, request, *args, **kwargs):
+        # FileWatchdog'un çalışmasını durdur
+        global process
+        if process is not None and process.poll() is None:
+            process.terminate()
+            for _ in range(10):  # 10 saniye kontrol et
+                if process.poll() is not None:  # Süreç sona erdi
+                    process = None
+                    break
+                time.sleep(1)  # Her kontrol arasında 1 saniye bekle
+
+        logout(request)  
+        return HttpResponseRedirect(self.next_page or reverse('login'))  # Redirect to next_page or 'login.html' if not specified
+
+class LoginRequiredMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+        # Exclude URLs list
+        self.exempt_urls = [reverse('login'), reverse('logout')] 
+
+    def __call__(self, request):
+        if not request.user.is_authenticated and request.path not in self.exempt_urls:
+            return redirect(f"{reverse('login')}?next={request.path}")
+        response = self.get_response(request)
+        return response
+# Login / Logout View End
+
+
+# Index View
 def index(request):
     event_logs = Events.objects.all()
     descriptions = Eventdescription.objects.all()
@@ -81,7 +138,7 @@ def iplogs(request):
         iplogs_list.append(iplog_dict)
     return render(request, 'iplogs.html', {'iplogs': iplogs_list})
 
-#####################################################################################
+
 def settings(request):
     # Count Logs 
     iplogs_count = Iplogs.objects.count()
@@ -111,7 +168,6 @@ def settings(request):
         'current_path': current_path, # POST request
     })
 
-#####################################################################################
 from django.http import StreamingHttpResponse
 from django.http import HttpResponseServerError
 
@@ -127,11 +183,9 @@ def stream_terminal_output(request, command):
     response['Cache-Control'] = 'no-cache'
     return response
 
-#####################################################################################
 def todo(request):
     return render(request, 'todo.html')
 
-#####################################################################################
 # POST request for IPLogs
 process = None # Global variable to store the process
 
@@ -154,7 +208,7 @@ def stop_script(request):
     else:
         return JsonResponse({"status": "Script is already stopped"})
 
-#####################################################################################
+
 # POST request for Eventlog
 def run_log_collector(request):
     global process
