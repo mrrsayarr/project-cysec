@@ -19,6 +19,7 @@ IP Logs
                 <th>Local Port</th>
                 <th>Remote IP</th>
                 <th>Remote Port</th>
+                <th>Protocol</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -29,6 +30,7 @@ IP Logs
                 <td>{{ iplog.Process }}</td>
                 <td>{{ iplog.LocalIp }}</td>
                 <td>{{ iplog.LocalPort }}</td>
+                
                 <td>
                     <!-- Add blinking dot if Remote IP is different from Local IP -->
                     {% if iplog.RemoteIp != iplog.LocalIp %}
@@ -37,6 +39,7 @@ IP Logs
                     {{ iplog.RemoteIp }}
                 </td>
                 <td>{{ iplog.RemotePort }}</td>
+                <td>{{ iplog.Protocol }}</td>
                 <td>
                     <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                         data-bs-target="#processModal{{ iplog.PID }}">
@@ -135,6 +138,7 @@ IP Logs
                         <td>${iplog.LocalPort}</td>
                         <td>${blinkingDot} ${iplog.RemoteIp}</td>
                         <td>${iplog.RemotePort}</td>
+                        <td>${iplog.Protocol}</td>
                         <td>
                             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                 data-bs-target="#processModal${iplog.PID}">
