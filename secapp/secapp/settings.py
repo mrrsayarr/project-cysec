@@ -34,7 +34,7 @@ TRAINED_MODEL_PATH = os.path.join('scripts', 'trained_model.joblib')
 SECRET_KEY = 'django-insecure-nk&#+wy7l#y9fh=nx7@$=n0$_=sr)at=tae$w9x5i_7d1q)avv' # Keep in Env
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1'] # ALLOWED_HOSTS = ['sunucunuzun.ip.adresi', 'www.domainadiniz.com']
 
@@ -129,10 +129,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = '/static/'
-# STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 STATICFILES_DIRS = [
     BASE_DIR / "static", 
 ]
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
