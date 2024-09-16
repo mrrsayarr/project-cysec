@@ -33,6 +33,11 @@ urlpatterns = [
     path('run-log-collector/', run_log_collector, name='run_log_collector'),
     path('stop-log-collector/', stop_log_collector, name='stop_log_collector'),
 
+    # POST requests for Event Description
+    path('add_event/', views.add_event, name='add_event'),
+    path('update_event/<int:event_id>/', views.update_event, name='update_event'),
+    path('check_event/', views.check_event, name='check_event'),
+
     path('run_sql/', views.run_sql, name='run_sql'), # POST requests for IPLogs Database
     path('clear_error_logs/', views.clear_error_logs, name='clear_error_logs'), # Clear Error Logs
     path('clear-event-logs/', views.clear_event_logs, name='clear_event_logs'), # Clear Event Logs
@@ -92,6 +97,11 @@ urlpatterns = [
     re_path(r"^delete-rule/(?P<rule_id>\d+)/?$", views.delete_rule, name="delete_rule"),
     re_path(r"^login/?$", views.login_view, name="login"),
     re_path(r"^logout/?$", views.LogoutViewWithGet.as_view(next_page='/login'), name="logout"),
+    re_path(r"^stream_terminal_output/(?P<command>.+)/?$", views.stream_terminal_output, name="stream_terminal_output"),
+    re_path(r"^add_event/?$", views.add_event, name="add_event"),
+    re_path(r"^update_event/(?P<event_id>\d+)/?$", views.update_event, name="update_event"),
+    re_path(r"^check_event/?$", views.check_event, name="check_event"),
+    
 
     # Functions
     re_path(r"^run_script/?$", views.run_script, name="run_script"),

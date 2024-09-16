@@ -12,7 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 def run_sql(request):
     with connection.cursor() as cursor:
         cursor.execute('DELETE FROM IpLogs')
-    return HttpResponseRedirect('/settings')  # Redirect to the IPLogs page after deleting all records
+    return HttpResponseRedirect('/iplogs/')  # Redirect to the IPLogs page after deleting all records
 
 # ONLY Events table is used in this script
 
@@ -20,7 +20,7 @@ def run_sql(request):
 def clear_error_logs(request):
     with connection.cursor() as cursor:
         cursor.execute('DELETE FROM error_logs')
-    return HttpResponseRedirect('/settings')  # Redirect to the settings page after deleting all records
+    return HttpResponseRedirect('/settings/')  # Redirect to the settings page after deleting all records
 
 # Clear Event_Logs
 
@@ -46,7 +46,7 @@ def clear_event_logs(request):
             DELETE FROM events
             WHERE predictedValue = 0
         ''')
-    return HttpResponseRedirect('/eventlog')
+    return HttpResponseRedirect('/eventlog/')
 
 
 # Clear Local IPLogs

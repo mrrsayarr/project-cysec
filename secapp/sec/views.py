@@ -2,10 +2,11 @@ import os
 import time
 import subprocess
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
-from sec.models import Events, Iplogs, FileLogs, ErrorLogs, News, Eventdescription, WatchPaths
+from django.shortcuts import render, redirect, get_object_or_404
+from sec.models import Events, Iplogs, FileLogs, ErrorLogs, News, Eventdescription, WatchPaths 
 from django.conf import settings as django_settings  # 'settings' modülünü 'django_settings' olarak import edin
 from .sql_views import *
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
@@ -79,7 +80,7 @@ def index(request):
     
     return render(request, 'index.html', {'event_descriptions': event_descriptions})
 
-
+# Eventlog View
 def eventlog(request):
     event_logs = Events.objects.all()
     # Event'lere açıklamaları ekleme
@@ -209,6 +210,8 @@ def stop_script(request):
         return JsonResponse({"status": "Script is already stopped"})
 
 
+process = None  # Ensure process is initially None
+
 # POST request for Eventlog
 def run_log_collector(request):
     global process
@@ -223,13 +226,9 @@ def stop_log_collector(request):
     global process
     if process:
         process.kill()  # Use kill instead of terminate
-        # Add a waiting period to check if the process has ended
-        for _ in range(10):  # Check for 10 seconds
-            if process.poll() is not None:  # Process has ended
-                process = None
-                return JsonResponse({"status": "LogCollector script stopped"})
-            time.sleep(1)  # Wait 1 second between each check
-        return JsonResponse({"status": "LogCollector script could not be stopped"})
+        process.wait()  # Wait for the process to end
+        process = None
+        return JsonResponse({"status": "LogCollector script stopped"})
     else:
         return JsonResponse({"status": "LogCollector script is already stopped"})
 
@@ -274,6 +273,59 @@ def stop_watch(request):
         else:
             return JsonResponse({'message': 'No watcher to stop.', 'status': 'No watcher to stop.'})
 
+# Add Event Description page
+from django.contrib import messages
+@csrf_exempt
+def add_event(request):
+    """Yeni bir event açıklaması ekler."""
+    if request.method == 'POST':
+        eventid = request.POST.get('eventid')
+        description = request.POST.get('description')
+
+        # Check if eventid already exists
+        if Eventdescription.objects.filter(eventid=eventid).exists():
+            return JsonResponse({'message': 'Event ID already exists.'}, status=400)
+
+        # Create new event
+        event = Eventdescription(eventid=eventid, description=description)
+        event.save()
+
+        return JsonResponse({'message': 'Event added successfully.'}, status=200)
+
+    return render(request, 'add_event.html')
+
+# Update Event Description page
+@csrf_exempt
+def update_event(request, event_id=None):
+    """Bir event açıklamasını günceller."""
+    event = None
+    if event_id:
+        event = get_object_or_404(Eventdescription, eventid=event_id)
+
+    if request.method == 'POST':
+        event_id = request.POST.get('eventid')
+        description = request.POST.get('description')
+
+        # Check if eventid already exists
+        if Eventdescription.objects.filter(eventid=event_id).exists():
+            event = Eventdescription.objects.get(eventid=event_id)
+            event.description = description
+            event.save()
+        else:
+            return JsonResponse({'message': 'Event ID does not exist.'}, status=400)
+
+    return render(request, 'update_event.html', {'event': event})
+
+# Check Event Description page
+def check_event(request):
+    """Bir eventid kontrol eder ve varsa update_event sayfasına yönlendirir."""
+    if request.method == 'POST':
+        event_id = request.POST.get('eventid')
+
+        if Eventdescription.objects.filter(eventid=event_id).exists():
+            return redirect('update_event', event_id=event_id)
+
+    return render(request, 'add_event.html')
 
 # Port Scanner views
 def port_scanner(request):
@@ -288,7 +340,6 @@ import socket
 import threading
 import re
 from django.contrib import messages
-from django.shortcuts import render, redirect
 
 def port_scanner(request):
     open_ports = []
