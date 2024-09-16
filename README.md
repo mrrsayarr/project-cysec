@@ -21,7 +21,7 @@ git clone https://github.com/mrrsayarr/APP_NAME
 
 ```bash
 python -m venv env
-source env/bin/activate  # On Windows, this command is "env\Scripts\activate".
+source env\Scripts\activate
 ```
 
 3. Install the project's dependencies:
