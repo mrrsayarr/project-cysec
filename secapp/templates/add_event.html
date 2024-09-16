@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}
+Add & Check Event
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid pt-4 px-4">
+  <form action="/add_event/" method="post" class="form w-50" id="addEventForm">
+    <blockquote class="blockquote">
+      <p>Add Event</p>
+    </blockquote>
+    {% csrf_token %}
+    <div class="form-group mt-2">
+      <label for="eventid">Event ID:</label>
+      <input type="number" id="eventid" name="eventid" class="form-control mt-1" style="background-color: white;" required>
+    </div>
+    <div class="form-group mt-2">
+      <label for="description">Description:</label>
+      <input type="text" id="description" name="description" class="form-control mt-1" style="background-color: white;" required>
+    </div>
+    <input type="submit" value="Submit" class="btn btn-primary mt-2">
+    <div id="message" class="mt-2"></div>
+  </form>
+
+  <hr class"mt-5">
+
+  <form action="{% url 'check_event' %}" method="post" class="form w-50 mt-5">
+    <blockquote class="blockquote">
+      <p>Update Event</p>
+    </blockquote>
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="eventid">Check Event ID for Update</label>
+      <input type="number" id="eventid" name="eventid" class="form-control mt-1" placeholder="Example: 4799" style="background-color: white;" required>
+    </div>
+    <input type="submit" value="Check Event" class="btn btn-primary mt-2">
+  </form>
+</div>
+
+<script>
+  document.getElementById('addEventForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+  
+    fetch('/add_event/', {
+      method: 'POST',
+      body: new FormData(this)
+    })
+    .then(response => {
+      if (!response.ok) {
+        // Hata durumunda, hata mesajını JSON'dan al
+        return response.json().then(error => {
+          throw new Error(error.message);
+        });
+      }
+      return response.json();
+    })
+    .then(data => {
+      const messageElement = document.getElementById('message');
+      messageElement.textContent = data.message;
+      if (data.message === 'Event ID already exists.') {
+        messageElement.style.color = 'red';
+      } else {
+        messageElement.style.color = 'green';
+        // Başarı durumunda, inputları temizle
+        document.getElementById('eventid').value = '';
+        document.getElementById('description').value = '';
+      }
+    })
+    .catch(error => {
+      // Hata durumunda, hata mesajını göster
+      const messageElement = document.getElementById('message');
+      messageElement.textContent = error.message;
+      messageElement.style.color = 'red';
+    });
+  });
+</script>
+
+{% endblock %}
