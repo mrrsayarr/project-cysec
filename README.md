@@ -1,12 +1,44 @@
-```
-Django==5.0.8
-joblib==1.4.2
-mitmproxy==10.4.2
-pandas==2.2.2
-psutil==6.0.0
-Requests==2.32.3
-scikit_learn==1.5.1
-watchdog==4.0.1
-win32security==2.1.0
+### Getting Started
 
+
+
+## Prerequisites
+
+You will need the following installed on your machine:
+- Python 3.11+
+- Django 5.1+
+- Other dependencies listed in the requirements.txt file.
+
+## Installation
+
+1. Clone the repository to your local machine:
+
+```bash
+git clone https://github.com/mrrsayarr/APP_NAME
+```
+
+2. Create and activate a virtual environment:
+
+```bash
+python -m venv env
+source env/bin/activate  # On Windows, this command is "env\Scripts\activate".
+```
+
+3. Install the project's dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+4. Create and migrate the database:
+
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+5. Start the development server:
+
+```bash
+python manage.py runserver
 ```
