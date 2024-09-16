@@ -1,25 +1,28 @@
 <!-- Navbar Start -->
 <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
     <a href="/" class="navbar-brand d-flex d-lg-none me-4">
-        <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
+        <h2 class="text-primary mb-0"><i class="fa fa-user-secret"></i></h2>
     </a>
     <a href="#" class="sidebar-toggler flex-shrink-0">
         <i class="fa fa-bars"></i>
     </a>
-    <!-- <button id="sidebar-toggler" class="flex-shrink-0">
-        <i class="fa fa-bars"></i>
-    </button> -->
+    {% comment %} 
+        <button id="sidebar-toggler" class="flex-shrink-0">
+            <i class="fa fa-bars"></i>
+        </button>
+    {% endcomment %}
     <form class="d-none d-md-flex ms-4">
+        {% comment %} Search Bar {% endcomment %}
         <!-- <input class="form-control bg-dark border-0" type="search" placeholder="Search"> -->
     </form>
     <div class="navbar-nav align-items-center ms-auto">
         <div class="nav-item dropdown">
             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="far fa-user me-2"></i></a>
             <div class="dropdown-menu bg-dark border border-light rounded-3">                
-                <a href="/login/" class="dropdown-item text-white">Sign In</a>
-                <a href="/admin/"    class="dropdown-item text-white">Sign Up</a>
-                <a href="/admin/" class="dropdown-item text-white">404 Error</a>
-                <a href="/admin/" class="dropdown-item text-white">Blank Page</a>
+                <a href="/admin/" class="dropdown-item text-white">Admin</a>
+                {% comment %} <a href="/admin/"    class="dropdown-item text-white">Sign Up</a> {% endcomment %}
+                {% comment %} <a href="/admin/" class="dropdown-item text-white">404 Error</a> {% endcomment %}
+                {% comment %} <a href="/admin/" class="dropdown-item text-white">Blank Page</a> {% endcomment %}
             </div>
         </div>
         <!-- <a href="/eventlog" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i></a>
@@ -27,11 +30,40 @@
         <a href="/settings" class="nav-item nav-link"><i class="fa fa-th me-2"></i></a> -->
         
         <a href="/todo" class="nav-item nav-link"><i class="fa fa-list me-2"></i>To Do </a>
-
-        <form method="post" action="{% url 'logout' %}">
+        
+        {% comment %} Method 1 {% endcomment %}
+        {% comment %} <form method="post" action="{% url 'logout' %}" onsubmit="return confirm('Are you sure you want to log out?');">
             {% csrf_token %}
-            <button type="submit" class="btn btn-secondary m-3" > <i class="fas fa-sign-out-alt"></i></button>
+            <button type="submit" class="btn btn-secondary m-3">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </form> {% endcomment %}
+
+        {% comment %} Method 2 {% endcomment %}
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <form method="post" action="{% url 'logout' %}" id="logoutForm">
+            {% csrf_token %}
+            <button type="button" class="btn btn-secondary m-3" onclick="confirmLogout()">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
         </form>
+        
+        <script>
+        function confirmLogout() {
+            Swal.fire({
+                title: 'Are you sure you want to log out?',
+                showDenyButton: true,
+                confirmButtonText: `Yes`,
+                denyButtonText: `No`,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logoutForm').submit();
+                }
+            })
+        }
+        </script>
+        {% comment %} Method 2 End {% endcomment %}
 
         <!-- <a href="#" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>File Watchdog</a> -->
         <!-- <a href="#" class="nav-item nav-link"><i class="fa fa-envelope me-2"></i>Virus Total</a> -->

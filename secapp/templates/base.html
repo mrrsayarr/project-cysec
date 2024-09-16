@@ -71,6 +71,29 @@
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top animated-button">
             <i class="bi bi-arrow-up"></i>
         </a>
+        <script>
+            $(document).ready(function() {
+                let scrollButton = $('.back-to-top');  // Get the scroll button
+        
+                // Initially hide the button
+                scrollButton.hide();
+        
+                // When the user scrolls down and the document height is greater than the window height, show the button
+                $(window).scroll(function() {
+                    if ($(window).scrollTop() > 0 && $(document).height() > $(window).height()) {
+                        scrollButton.fadeIn();
+                    } else {
+                        scrollButton.fadeOut();
+                    }
+                });
+        
+                // When the user clicks on the button, scroll to the top of the document
+                scrollButton.click(function() {
+                    $('html, body').animate({scrollTop: 0}, 800);
+                    return false;
+                });
+            });
+        </script>
             
     </div>
 

@@ -7,7 +7,7 @@ Port Scan
 {% block content %}
 
 <div class="container-fluid pt-4 px-4">
-    <form method="post" id="scanForm" onsubmit="return false;">
+    <form method="post" id="scanForm" onsubmit="return false;" class="w-50">
         {% csrf_token %}
         <div class="form-group">
             <label for="ip_address">IP Address:</label>

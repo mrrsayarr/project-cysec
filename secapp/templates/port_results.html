@@ -11,11 +11,11 @@ Port Scan Results
     {% if open_ports %}
     <ul class="list-group"></ul>
     {% for port, status in open_ports %}
-    <li class="list-group-item">Port: {{ port }}, Status: {{ status }}</li>
+    <li class="list-group-item w-50">Port: {{ port }}, Status: {{ status }}</li>
     {% endfor %}
     </ul>
     {% else %}
-    <p class="alert alert-info">No open ports found.</p>
+    <p class="alert alert-info w-50">No open ports found.</p>
     {% endif %}
     
     <div class="mt-5">

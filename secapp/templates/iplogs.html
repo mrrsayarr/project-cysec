@@ -36,7 +36,7 @@ IP Logs
                     {% if iplog.RemoteIp != iplog.LocalIp %}
                     <div class="blinking-dot"></div>
                     {% endif %}
-                    {{ iplog.RemoteIp }}
+                    <a href="https://www.whois.com/whois/{{ iplog.RemoteIp }}" target="_blank">{{ iplog.RemoteIp }}</a>
                 </td>
                 <td>{{ iplog.RemotePort }}</td>
                 <td>{{ iplog.Protocol }}</td>
@@ -70,11 +70,6 @@ IP Logs
                             <p><strong>Communication Protocol:</strong> {{ iplog.CommunicationProtocol }}</p>
                         </div>
                         <div class="modal-footer">
-                            <!-- <input type="text" id="inputText" class="form-control w-%100" placeholder="Enter text"> -->
-                            <button type="button" class="btn btn-primary btn-sm"
-                                onclick="copyToClipboard('{{ iplog.RemoteIp }}')">
-                                <i class="bi bi-clipboard">Copy Remote IP</i>
-                            </button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
@@ -127,8 +122,12 @@ IP Logs
                 // Add new rows
                 data.forEach(iplog => {
                     let blinkingDot = '';
+                    let remoteIp = iplog.RemoteIp;
                     if (iplog.RemoteIp !== iplog.LocalIp) {
                         blinkingDot = '<div class="blinking-dot"></div>';
+                    }
+                    if (iplog.RemoteIp !== '127.0.0.1') {
+                        remoteIp = `<a href="https://www.whois.com/whois/${iplog.RemoteIp}" target="_blank">${iplog.RemoteIp}</a>`;
                     }
                     const row = tableBody.insertRow(-1);
                     row.innerHTML = `
@@ -136,7 +135,7 @@ IP Logs
                         <td>${iplog.Process}</td>
                         <td>${iplog.LocalIp}</td>
                         <td>${iplog.LocalPort}</td>
-                        <td>${blinkingDot} ${iplog.RemoteIp}</td>
+                        <td>${blinkingDot} ${remoteIp}</td>
                         <td>${iplog.RemotePort}</td>
                         <td>${iplog.Protocol}</td>
                         <td>
