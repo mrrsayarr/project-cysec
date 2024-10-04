@@ -8,50 +8,194 @@ Search on Google
 
 <div class="container-fluid pt-4 px-4">
     <h1 class="text-start">Google Dork Search</h1>
+<<<<<<< HEAD
+
+    <form id="searchForm" method="POST" action="{% url 'search' %}">
+
+        {% csrf_token %}
+        <div class="form-group mt-2">
+            <label for="inputText">Search Text:</label>
+            <div class="input-group">
+                <span class="input-group-text m-1">
+                    <i class="bi bi-search fs-4" style="vertical-align: middle;"></i>
+                </span>
+                <input type="text" class="form-control bg-white m-1" id="inputText" name="inputText" placeholder="Enter search text here...">
+            </div>
+        </div>
+
+        <div class="form-group mt-2">
+            <label for="fileType">File Type:</label>
+            <div class="input-group">
+                <span class="input-group-text m-1">
+                    <i class="bi bi-file-earmark-text fs-4" style="vertical-align: middle;"></i>
+                </span>
+                <select class="form-control m-1" id="fileType">
+                    <option value="">Select File Type</option>
+                    <option value="pdf">
+                        <i class="bi bi-file-pdf"></i> PDF (pdf)
+                    </option>
+                    <option value="ppt">
+                        <i class="bi bi-file-powerpoint"></i> PowerPoint (ppt)
+                    </option>
+                    <option value="pptx">
+                        <i class="bi bi-file-powerpoint"></i> PowerPoint (pptx)
+                    </option>
+                    <option value="doc">
+                        <i class="bi bi-file-word"></i> Word (doc)
+                    </option>
+                    <option value="docx">
+                        <i class="bi bi-file-word"></i> Word (docx)
+                    </option>
+                    <option value="xls">
+                        <i class="bi bi-file-excel"></i> Excel (xls)
+                    </option>
+                    <option value="xlsx">
+                        <i class="bi bi-file-excel"></i> Excel (xlsx)
+                    </option>
+                    <option value="txt">
+                        <i class="bi bi-file-text"></i> TXT (txt)
+                    </option>
+                    <option value="sql">
+                        <i class="bi bi-file-earmark-code"></i> SQL (sql)
+                    </option>
+                    <option value="db">
+                        <i class="bi bi-file-earmark-code"></i> SQLite (db)
+                    </option>
+                    <option value="mdb">
+                        <i class="bi bi-file-earmark-code"></i> Access (mdb)
+                    </option>
+                    <option value="accdb">
+                        <i class="bi bi-file-earmark-code"></i> Access (accdb)
+                    </option>
+                    <option value="csv">
+                        <i class="bi bi-file-earmark-code"></i> CSV (csv)
+                    </option>
+                    <option value="sql">
+                        <i class="bi bi-file-earmark-code"></i> SQL (sql)
+                    </option>
+                    <option value="db">
+                        <i class="bi bi-file-earmark-code"></i> SQLite (db)
+                    </option>
+                    <option value="mdb">
+                        <i class="bi bi-file-earmark-code"></i> Access (mdb)
+                    </option>
+                    <option value="accdb">
+                        <i class="bi bi-file-earmark-code"></i> Access (accdb)
+                    </option>
+                    <option value="csv">
+                        <i class="bi bi-file-earmark-code"></i> CSV (csv)
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group mt-2">
+            <label for="site">Site:</label>
+            <div class="input-group">
+                <span class="input-group-text m-1">
+                    <i class="bi bi-globe fs-4" style="vertical-align: middle;"></i>
+                </span>
+                <input type="text" class="form-control bg-white m-1" id="site" placeholder="example.com">
+            </div>
+        </div>
+
+        <div class="form-group mt-2">
+            <label for="intitle">In Title:</label>
+            <div class="input-group">
+                <span class="input-group-text m-1">
+                    <i class="bi bi-card-heading fs-4" style="vertical-align: middle;"></i>
+                </span>
+                <input type="text" class="form-control bg-white m-1" id="intitle" placeholder="Keywords in title">
+            </div>
+=======
+    
     <div class="form-group mt-2">
         <label for="inputText">Search Text:</label>
         <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-search fs-4"></i></span>
-            <input type="text" class="form-control border-color mt-1" id="inputText"
-                placeholder="Enter search text here...">
+            <span class="input-group-text">
+                <i class="bi bi-search fs-4" style="vertical-align: middle;"></i>
+            </span>
+            <input type="text" class="form-control bg-white mt-1" id="inputText" placeholder="Enter search text here...">
         </div>
     </div>
+
     <div class="form-group mt-2">
         <label for="fileType">File Type:</label>
-        <select class="form-control  mt-1" id="fileType">
-            <option value="">Select File Type</option>
-            <option value="pdf">PDF (pdf)</option>
-            <option value="ppt">PowerPoint (ppt)</option>
-            <option value="pptx">PowerPoint (pptx)</option>
-            <option value="doc">Word (doc)</option>
-            <option value="docx">Word (docx)</option>
-            <option value="xls">Excel (xls)</option>
-            <option value="xlsx">Excel (xlsx)</option>
-            <option value="txt">TXT (txt)</option>
-        </select>
+        <div class="input-group">
+            <span class="input-group-text">
+                <i class="bi bi-file-earmark-text fs-4" style="vertical-align: middle;"></i>
+            </span>
+            <select class="form-control mt-1" id="fileType">
+                <option value="">Select File Type</option>
+                <option value="pdf">
+                    <i class="bi bi-file-pdf"></i> PDF (pdf)
+                </option>
+                <option value="ppt">
+                    <i class="bi bi-file-powerpoint"></i> PowerPoint (ppt)
+                </option>
+                <option value="pptx">
+                    <i class="bi bi-file-powerpoint"></i> PowerPoint (pptx)
+                </option>
+                <option value="doc">
+                    <i class="bi bi-file-word"></i> Word (doc)
+                </option>
+                <option value="docx">
+                    <i class="bi bi-file-word"></i> Word (docx)
+                </option>
+                <option value="xls">
+                    <i class="bi bi-file-excel"></i> Excel (xls)
+                </option>
+                <option value="xlsx">
+                    <i class="bi bi-file-excel"></i> Excel (xlsx)
+                </option>
+                <option value="txt">
+                    <i class="bi bi-file-text"></i> TXT (txt)
+                </option>
+            </select>
+        </div>
     </div>
+
     <div class="form-group mt-2">
         <label for="site">Site:</label>
         <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-globe fs-4"></i></span>
-            <input type="text" class="form-control border-color mt-1" id="site" placeholder="example.com">
+            <span class="input-group-text">
+                <i class="bi bi-globe fs-4" style="vertical-align: middle;"></i>
+            </span>
+            <input type="text" class="form-control bg-white mt-1" id="site" placeholder="example.com">
         </div>
     </div>
+
     <div class="form-group mt-2">
         <label for="intitle">In Title:</label>
         <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-card-heading fs-4"></i></span>
-            <input type="text" class="form-control border-color mt-1" id="intitle" placeholder="Keywords in title">
+            <span class="input-group-text">
+                <i class="bi bi-card-heading fs-4" style="vertical-align: middle;"></i>
+            </span>
+            <input type="text" class="form-control bg-white mt-1" id="intitle" placeholder="Keywords in title">
         </div>
     </div>
+
     <div class="form-group mt-2">
         <label for="inurl">In URL:</label>
         <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-link-45deg fs-4"></i></span>
-            <input type="text" class="form-control border-color mt-1" id="inurl" placeholder="Keywords in URL">
+            <span class="input-group-text">
+                <i class="bi bi-link-45deg fs-4" style="vertical-align: middle;"></i>
+            </span>
+            <input type="text" class="form-control bg-white mt-1" id="inurl" placeholder="Keywords in URL">
+>>>>>>> 40b7933007d8d1c42e995378587565a35287835d
         </div>
-    </div>
-    <button onclick="performSearch()" class="btn btn-primary btn-block mt-2">Start Search</button>
+
+        <div class="form-group mt-2">
+            <label for="inurl">In URL:</label>
+            <div class="input-group">
+                <span class="input-group-text m-1">
+                    <i class="bi bi-link-45deg fs-4" style="vertical-align: middle;"></i>
+                </span>
+                <input type="text" class="form-control bg-white m-1" id="inurl" placeholder="Keywords in URL">
+            </div>
+        </div>
+    </form>
+    <button type="button" class="btn btn-primary btn-block mt-3 m-1" onclick="performSearch()">Start Search</button>
 
     <div class="mt-4" id="resultDiv"></div>
 </div>
@@ -63,37 +207,57 @@ Search on Google
         const site = document.getElementById('site').value.trim();
         const intitle = document.getElementById('intitle').value.trim();
         const inurl = document.getElementById('inurl').value.trim();
-        const resultDiv = document.getElementById('resultDiv');
-
-        resultDiv.innerHTML = '';
-
+    
         if (text) {
-            let searchQuery = `"${text}"`;
-
-            if (fileType) {
-                searchQuery += ` filetype:${fileType}`;
-            }
-            if (site) {
-                searchQuery += ` site:${site}`;
-            }
-            if (intitle) {
-                searchQuery += ` intitle:${intitle}`;
-            }
-            if (inurl) {
-                searchQuery += ` inurl:${inurl}`;
-            }
-
-            const googleSearchLink = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
-
-            const searchResult = document.createElement('div');
-            searchResult.classList.add('alert', 'alert-success');
-            searchResult.innerHTML = `
-                <p>Google Dork Query: <strong>${searchQuery}</strong></p>
-                <p>Search Link: <a href="${googleSearchLink}" target="_blank" class="alert-link">Open in Google</a></p>
-            `;
-            resultDiv.appendChild(searchResult);
+            // POST isteği gönder
+            fetch('{% url "search" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    inputText: text,
+                    fileType: fileType,
+                    site: site,
+                    intitle: intitle,
+                    inurl: inurl
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('resultDiv');
+                resultDiv.innerHTML = '';
+    
+                if (data.error) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-danger d-flex align-items-center" style="animation: fadeIn 1s;">
+                            <i class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"></i>
+                            <div>
+                                ${data.error}
+                            </div>
+                        </div>`;
+                } else if (data.search_link) {
+                    const searchLink = data.search_link;
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-info d-flex align-items-center" style="animation: fadeIn 1s;">
+                            <svg xmlns="http://www.w3.org/2000/svg" style="width: 24px; height: 24px; margin-right: 10px;" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm.93-9.412-1.354-.658-.002-.004c-.507-.246-.891-.577-1.394-.96C5.304 4.355 4.7 4.158 4.7 3.5c0-.653.357-1.027 1.272-1.027.635 0 1.437.24 2.352.72l.724-1.42C7.273 1.214 6.158 1 5.286 1 3.72 1 2.7 1.835 2.7 3.5c0 1.364.724 2.182 1.72 2.882.351.247.683.479 1.374.922l.002.002.535.26c.464.227.931.487 1.342.772.308.213.494.445.494.708 0 .513-.394.823-1.003.823-.552 0-1.244-.259-2.057-.74l-.758 1.516c.802.393 1.707.615 2.57.615 1.844 0 2.93-1.02 2.93-2.5 0-1.367-.75-2.253-1.782-3.013z"/>
+                            </svg>
+                            <div>
+                                <a href="${searchLink}" target="_blank">Click here to view Google search results</a>
+                            </div>
+                        </div>`;
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                resultDiv.innerHTML = `<div class="alert alert-danger d-flex align-items-center" style="animation: fadeIn 1s;">
+                    <i class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"></i>
+                    <div>An error occurred.</div></div>`;
+            });
         } else {
-            resultDiv.innerHTML = '<div class="alert alert-danger">Please enter a search text.</div>';
+            document.getElementById('resultDiv').innerHTML = '<div class="alert alert-danger">Please enter a search text.</div>';
         }
     }
 </script>

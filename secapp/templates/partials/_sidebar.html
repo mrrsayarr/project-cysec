@@ -23,7 +23,7 @@
             <a href="/news/" class="nav-item nav-link {% if request.path == '/news/' %}active{% endif %}"><i class="fa fa-link me-2"></i>Security News</a>
             <a href="/port_scanner/" class="nav-item nav-link {% if request.path == '/port_scanner/' %}active{% endif %}"><i class="fa fa-chart-bar me-2"></i>Port Scan</a>
             <a href="/task-controller/" class="nav-item nav-link {% if request.path == '/task-controller/' %}active{% endif %}"><i class="fa fa-tasks me-2"></i>Task Manager</a>
-            <a href="/arp_monitor" class="nav-item nav-link {% if request.path == '/arp_monitor/' %}active{% endif %}"><i class="fa fa-network-wired me-2"></i>ARP Monitor</a>
+            <a href="/arp_monitor/" class="nav-item nav-link {% if request.path == '/arp_monitor/' %}active{% endif %}"><i class="fa fa-network-wired me-2"></i>ARP Monitor</a>
             <a href="/firewall_monitor/" class="nav-item nav-link {% if request.path == '/firewall_monitor/' %}active{% endif %}"><i class="fas fa-shield-alt me-2"></i>Firewall Monitor</a>
             <a href="/search/" class="nav-item nav-link {% if request.path == '/search/' %}active{% endif %}"><i class="fa fa-search me-2"></i>Search with Dork</a>
 
@@ -31,14 +31,17 @@
 
              
 
-            <div class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
-                        class="far fa-file-alt me-2"></i>Event Descripton</a>
+            {% if request.path == '/add_event/' or request.path == '/update_event/' %}
+                <div class="nav-item dropdown active">
+            {% else %}
+                <div class="nav-item dropdown">
+            {% endif %}
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>Event Descripton</a>
                 <div class="dropdown-menu bg-transparent border-0">
-                    <a href="/add_event/" class="dropdown-item">Add Event</a>
+                    <a href="/add_event/" class="dropdown-item {% if request.path == '/add_event/' %}active{% endif %}">Add Event</a>
                     <a href="/add_event/" class="dropdown-item">Update Event</a>
                 </div>
-            </div> 
+            </div>
 
             {% comment %}
 

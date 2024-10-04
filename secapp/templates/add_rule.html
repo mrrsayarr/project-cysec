@@ -12,11 +12,11 @@ Add New Firewall Rule
         {% csrf_token %}
         <div class="form-group">
             <label for="name">Name:</label>
-            <input type="text" class="form-control" id="name" name="name" required>
+            <input type="text" class="form-control bg-white" id="name" name="name" required>
         </div>
         <div class="form-group">
             <label for="description">Description:</label>
-            <textarea class="form-control" id="description" name="description"></textarea>
+            <textarea class="form-control bg-white" id="description" name="description"></textarea>
         </div>
         <div class="form-group">
             <label for="action">Action:</label>
@@ -35,21 +35,21 @@ Add New Firewall Rule
         </div>
         <div class="form-group">
             <label for="source_ip">Source IP:</label>
-            <input type="text" class="form-control" id="source_ip" name="source_ip">
+            <input type="text" class="form-control bg-white" id="source_ip" name="source_ip">
         </div>
         <div class="form-group">
             <label for="destination_ip">Destination IP:</label>
-            <input type="text" class="form-control" id="destination_ip" name="destination_ip">
+            <input type="text" class="form-control bg-white" id="destination_ip" name="destination_ip">
         </div>
         <div class="form-group">
             <label for="source_port">Source Port:</label>
-            <input type="text" class="form-control" id="source_port" name="source_port">
+            <input type="text" class="form-control bg-white" id="source_port" name="source_port">
         </div>
         <div class="form-group">
             <label for="destination_port">Destination Port:</label>
-            <input type="text" class="form-control" id="destination_port" name="destination_port">
+            <input type="text" class="form-control bg-white" id="destination_port" name="destination_port">
         </div>
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-primary mt-2">Save</button>
 
         {% if error %}
         <div class="alert alert-danger mt-2" role="alert">
