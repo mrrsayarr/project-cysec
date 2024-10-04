@@ -1,6 +1,8 @@
 import os
 import time
+import json
 import subprocess
+
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from sec.models import Events, Iplogs, FileLogs, ErrorLogs, News, Eventdescription, WatchPaths 
@@ -120,8 +122,45 @@ def news(request):
         news_items = News.objects.all()
     return render(request, 'news.html', {'news_items': news_items})
 
+import urllib.parse  # Bu kütüphane URL encode işlemleri için kullanılacak - Gerekli kütüphane!
+
+# Google Dorks Search View
 def search(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            text = data.get("inputText", "").strip()
+            file_type = data.get("fileType", "")
+            site = data.get("site", "").strip()
+            intitle = data.get("intitle", "").strip()
+            inurl = data.get("inurl", "").strip()
+
+            # Arama sorgusunu oluştur
+            search_query = f'"{text}"'
+
+            if file_type:
+                search_query += f' filetype:{file_type}'
+            if site:
+                search_query += f' site:{site}'
+            if intitle:
+                search_query += f' intitle:{intitle}'
+            if inurl:
+                search_query += f' inurl:{inurl}'
+
+            # search_query'yi URL encode ile güvenli hale getir
+            encoded_query = urllib.parse.quote(search_query)
+
+            # Google arama linkini oluştur
+            google_search_link = f"https://www.google.com/search?q={encoded_query}"
+
+            # Kullanıcıya linki JSON olarak döndür
+            return JsonResponse({'search_link': google_search_link})
+
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON data.'}, status=400)
+
     return render(request, 'search.html')
+
 
 # IPLogs table is used in this script
 import ipaddress    
