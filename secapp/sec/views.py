@@ -23,7 +23,7 @@ from django.contrib.auth.views import LogoutView
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
-# Login View
+# Login View Start
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, request.POST)
@@ -66,7 +66,6 @@ class LoginRequiredMiddleware:
         response = self.get_response(request)
         return response
 # Login / Logout View End
-
 
 # Index View
 def index(request):
@@ -558,7 +557,6 @@ def add_rule(request):
             destination_ip=form_data['destination_ip'],
             source_port=form_data['source_port'],
             destination_port=form_data['destination_port'],
-            # ... diğer alanlar
         )
         new_rule.save()
         
@@ -580,7 +578,6 @@ def edit_rule(request, rule_id):
         rule.destination_port = request.POST['destination_port']
         rule.save()
         
-
         return redirect('firewall_monitor')
     return render(request, 'edit_rule.html', {'rule': rule})
 

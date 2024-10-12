@@ -121,4 +121,5 @@ urlpatterns = [
     re_path(r"^get-processes/?$", views.get_processes, name="get_processes"),
     re_path(r"^kill-process/?$", views.kill_process, name="kill_process"),
     re_path(r"^get-firewall-logs/?$", views.get_firewall_logs, name="get_firewall_logs"),
+
 ]
